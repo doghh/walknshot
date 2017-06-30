@@ -9,3 +9,10 @@ apiserver/build/
 *.iml
 
 hibernate.cfg.xml
+
+/target/
+
+.settings
+.classpath
+*.class
+.project
