@@ -20,8 +20,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/paw_code"
                 android:tint="@color/colorPrimaryDark" />
 
@@ -30,8 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:background="#00000000"
-                android:hint="账号/用户名/邮箱"
+                android:hint="@string/prompt_account"
                 android:padding="5dip"
+                android:textColorHint="@color/lostGrey"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -40,7 +41,7 @@
             android:layout_height="1px"
             android:layout_marginBottom="5dip"
             android:layout_marginTop="5dip"
-            android:background="#eeeeee" />
+            android:background="@color/lostGrey" />
 
         <LinearLayout
             android:id="@+id/input_layout_psw"
@@ -50,8 +51,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/paw_left"
                 android:tint="@color/colorPrimaryDark" />
 
@@ -60,9 +61,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:background="#00000000"
-                android:hint="密码"
+                android:hint="@string/prompt_password"
                 android:inputType="textPassword"
                 android:padding="5dip"
+                android:textColorHint="@color/lostGrey"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>

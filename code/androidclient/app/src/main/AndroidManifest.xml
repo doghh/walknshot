@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="cn.edu.sjtu.se.walknshot.androidclient.LoginActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.edu.sjtu.se.walknshot.androidclient.RegisterActivity"
+            android:name=".RegisterActivity"
+            android:exported="true" />
+        <activity
+            android:name=".PersonalCenterActivity"
             android:exported="true" />
     </application>
 

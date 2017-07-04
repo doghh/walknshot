@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg"
+    android:background="@color/colorPrimaryDark"
     tools:context="cn.edu.sjtu.se.walknshot.androidclient.LoginActivity">
 
     <RelativeLayout
@@ -23,13 +23,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/back" />
+                android:src="@drawable/icon_back" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Login"
+                android:text="@string/action_login"
                 android:textColor="#ffffff"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -48,7 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dip"
             android:gravity="center"
-            android:text="CREATE YOUR ACCOUNT"
+            android:text="@string/head_register"
+            android:textAllCaps="true"
             android:textColor="#ffffff"
             android:textSize="24sp" />
 
@@ -59,7 +60,8 @@
             android:layout_marginBottom="15dip"
             android:background="@drawable/bg_radius"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -72,8 +74,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:background="#00000000"
-                android:hint="用户名"
+                android:hint="@string/prompt_username"
                 android:padding="5dip"
+                android:textColorHint="@color/lostGrey"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -84,7 +87,8 @@
             android:layout_marginBottom="15dip"
             android:background="@drawable/bg_radius"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dip">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -97,9 +101,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:background="#00000000"
-                android:hint="密码"
+                android:hint="@string/prompt_password"
                 android:inputType="textPassword"
                 android:padding="5dip"
+                android:textColorHint="@color/lostGrey"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -109,7 +114,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_radius"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dip">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -122,9 +128,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dip"
                 android:background="#00000000"
-                android:hint="确认密码"
+                android:hint="@string/prompt_password_cfm"
                 android:inputType="textPassword"
                 android:padding="5dip"
+                android:textColorHint="@color/lostGrey"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -139,7 +146,7 @@
             android:paddingLeft="20dip"
             android:paddingRight="20dip"
             android:paddingTop="5dip"
-            android:text="JOIN WalknShot"
+            android:text="@string/action_sign_up"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 

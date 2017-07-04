@@ -1,18 +1,19 @@
 <resources>
-    <string name="app_name">Walk n Shot</string>
-    <string name="edit_message">Enter a messge</string>
-    <string name="button_send">Send</string>
+    <string name="app_name">WalkNShot</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment1">Hello Articles!</string>
-    <string name="hello_blank_fragment2">Hello Headline!</string>
-    <string name="title_activity_login2">Sign in</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="head_welcome">Show your beautiful life</string>
+    <string name="head_register">Create your account</string>
+    <string name="prompt_account">Username / E-mail</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_email">E-mail address</string>
+    <string name="prompt_password_cfm">Confirm Password</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_login">Login</string>
+    <string name="action_sign_up">JOIN WalkNShot</string>
+    <string name="action_register">Sign up</string>
+    <string name="action_forget_psw">Forget Password?</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -20,4 +21,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to bottom bar -->
+    <string name="title_main_page">Map</string>
+    <string name="title_record_path">Walk</string>
+    <string name="title_personal_center">Me</string>
+
 </resources>
