@@ -8,20 +8,20 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class LoginActivity extends Activity implements OnClickListener {
 
-    private TextView mBtnLogin;
+    private TextView mBtnLogin, mBtnGoRegister;
 
     private View progress;
 
@@ -41,24 +41,43 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     private void initView() {
         mBtnLogin = (TextView) findViewById(R.id.login_btn_login);
+        mBtnGoRegister = (TextView) findViewById(R.id.login_btn_register);
         progress = findViewById(R.id.layout_progress);
         mInputLayout = findViewById(R.id.input_layout);
         mName = (LinearLayout) findViewById(R.id.input_layout_name);
         mPsw = (LinearLayout) findViewById(R.id.input_layout_psw);
 
         mBtnLogin.setOnClickListener(this);
+        mBtnGoRegister.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
 
-        mWidth = mBtnLogin.getMeasuredWidth();
-        mHeight = mBtnLogin.getMeasuredHeight();
+        switch (v.getId()) {
 
-        mName.setVisibility(View.INVISIBLE);
-        mPsw.setVisibility(View.INVISIBLE);
+            case R.id.login_btn_login: {
+                mWidth = mBtnLogin.getMeasuredWidth();
+                mHeight = mBtnLogin.getMeasuredHeight();
 
-        inputAnimator(mInputLayout, mWidth, mHeight);
+                mName.setVisibility(View.INVISIBLE);
+                mPsw.setVisibility(View.INVISIBLE);
+
+                inputAnimator(mInputLayout, mWidth, mHeight);
+
+
+                // IF (checkUser())
+                Intent intent = new Intent(this, PersonalCenterFragment.class);
+                startActivity(intent);
+                break;
+            }
+
+            case R.id.login_btn_register: {
+                Intent intent = new Intent(this, RegisterActivity.class);
+                startActivity(intent);
+                break;
+            }
+        }
 
     }
 

@@ -23,7 +23,7 @@
     </string>
 
     <!-- Strings related to bottom bar -->
-    <string name="title_main_page">地图</string>
+    <string name="title_map">地图</string>
     <string name="title_record_path">记录路线</string>
     <string name="title_personal_center">个人中心</string>
 

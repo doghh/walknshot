@@ -3,18 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.edu.sjtu.se.walknshot.androidclient.PersonalCenterActivity">
+    tools:context="cn.edu.sjtu.se.walknshot.androidclient.PersonalCenterFragment">
 
     <RelativeLayout
+        android:id="@+id/record_path_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_alignParentTop="true"
         android:background="@color/colorPrimaryDark">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/title_personal_center"
+            android:text="@string/title_record_path"
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white" />
 
@@ -64,35 +66,7 @@
                     android:layout_height="0dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:text="@string/title_main_page"
-                    android:textColor="@color/lostGrey"
-                    android:textSize="14dp" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_horizontal"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/icon_time"
-                    android:tint="@color/lostGrey" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="@string/title_record_path"
+                    android:text="@string/title_map"
                     android:textColor="@color/lostGrey"
                     android:textSize="14dp" />
 
@@ -112,7 +86,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/icon_personal"
+                    android:src="@drawable/icon_time"
                     android:tint="@color/colorPrimaryDark" />
 
                 <TextView
@@ -120,8 +94,36 @@
                     android:layout_height="0dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
-                    android:text="@string/title_personal_center"
+                    android:text="@string/title_record_path"
                     android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/icon_personal"
+                    android:tint="@color/lostGrey" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:text="@string/title_personal_center"
+                    android:textColor="@color/lostGrey"
                     android:textSize="14dp" />
 
             </LinearLayout>

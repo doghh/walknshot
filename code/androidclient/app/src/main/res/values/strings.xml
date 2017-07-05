@@ -23,8 +23,13 @@
     </string>
 
     <!-- Strings related to bottom bar -->
-    <string name="title_main_page">Map</string>
+    <string name="title_map">Map</string>
     <string name="title_record_path">Walk</string>
     <string name="title_personal_center">Me</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
