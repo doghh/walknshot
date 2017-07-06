@@ -3,7 +3,7 @@ version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
@@ -19,5 +19,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.9'
 
     // sub-projects
-    compile project(":apimessages")
+    compile (project(":apimessages")) {
+        exclude group: 'com.fasterxml.jackson.core'
+    }
 }

@@ -39,7 +39,7 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public void register(Callback callback, String username, String password) {
+    public void register(final Callback callback, String username, String password) {
         if (!Util.validUsername(username) || !Util.validPassword(password)) {
             callback.onFailure(1);
             return;
@@ -69,7 +69,7 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public void login(Callback callback, String username, String password) {
+    public void login(final Callback callback, String username, String password) {
         if (!Util.validUsername(username) || !Util.validPassword(password)) {
             callback.onFailure(1);
             return;
@@ -100,7 +100,7 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public void isLoginValid(Callback callback) {
+    public void isLoginValid(final Callback callback) {
         if (!isLoggedIn()) {
             callback.onSuccess(false);
             return;
