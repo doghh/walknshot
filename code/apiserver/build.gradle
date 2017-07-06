@@ -12,8 +12,16 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
+    // Apache libs
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
+
     // Spring
     compile("org.springframework.boot:spring-boot-starter-web:1.5.4.RELEASE")
+
+    compile("org.springframework:spring-core:4.3.9.RELEASE")
+    compile("org.springframework:spring-context:4.3.9.RELEASE")
+    compile("org.springframework:spring-orm:4.3.9.RELEASE")
+    compile("org.springframework:spring-tx:4.3.9.RELEASE")
 
     // Hibernate
     compile("org.hibernate:hibernate-core:5.2.10.Final")

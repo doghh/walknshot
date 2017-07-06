@@ -1,9 +1,0 @@
-<hibernate-mapping>
-    <class name="cn.edu.sjtu.se.walknshot.apiserver.entities.Token" table="token">
-        <id name="id" type="int" column="id">
-            <generator class="native"/>
-        </id>
-        <property name="userId" type="int" column="uid"/>
-        <property name="passphrase" type="string" column="passphrase"/>
-    </class>
-</hibernate-mapping>

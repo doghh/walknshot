@@ -1,0 +1,11 @@
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">
+            org.hibernate.dialect.MySQL57Dialect
+        </property>
+
+        <mapping resource="mappings/Token.hbm.xml"/>
+        <mapping resource="mappings/User.hbm.xml"/>
+
+    </session-factory>
+</hibernate-configuration>
