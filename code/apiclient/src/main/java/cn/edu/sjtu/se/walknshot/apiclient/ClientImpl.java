@@ -12,6 +12,16 @@ public class ClientImpl implements Client {
     private Token token;
     private String baseUrl = "http://localhost:8080";
 
+    private static ClientImpl singleton = new ClientImpl();
+
+    public static ClientImpl getInstance() {
+        return singleton;
+    }
+
+    private ClientImpl() {
+        // NOP
+    }
+
     public void setToken(Token token) {
         this.token = token;
     }

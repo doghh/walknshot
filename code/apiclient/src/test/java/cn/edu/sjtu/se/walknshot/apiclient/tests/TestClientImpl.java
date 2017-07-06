@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestClientImpl {
     private static Client client;
     public static void main(String[] args) {
-        ClientImpl clientImpl = new ClientImpl();
+        ClientImpl clientImpl = ClientImpl.getInstance();
         clientImpl.setBaseUrl("http://localhost:8080");
         client = clientImpl;
 
