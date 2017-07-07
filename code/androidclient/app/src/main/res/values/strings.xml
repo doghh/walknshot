@@ -49,4 +49,7 @@
     <string name="title_record_path">Walk</string>
     <string name="title_personal_center">Me</string>
 
+    <!-- Strings of title -->
+    <string name="title_setting">Settings</string>
+
 </resources>

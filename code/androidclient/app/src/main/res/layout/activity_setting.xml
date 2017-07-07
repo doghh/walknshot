@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.edu.sjtu.se.walknshot.androidclient.PersonalCenterFragment">
+    tools:context="cn.edu.sjtu.se.walknshot.androidclient.SettingActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
         android:background="@color/colorPrimaryDark"
         toolbar:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -19,19 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/title_personal_center"
+            android:text="@string/title_setting"
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white" />
-
-        <ImageView
-            android:id="@+id/persenal_center_btn_setting"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end"
-            android:layout_margin="10dp"
-            android:maxHeight="24dp"
-            android:src="@drawable/icon_setting"
-            android:tint="@color/white" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -47,43 +36,55 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_personal_center"
-                android:textSize="200px" />
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_personal_center"
-                android:textSize="200px" />
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_personal_center"
-                android:textSize="200px" />
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_personal_center"
-                android:textSize="200px" />
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_personal_center"
-                android:textSize="200px" />
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_personal_center"
-                android:textSize="200px" />
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_setting"
+                android:textSize="90sp" />
 
         </LinearLayout>
 

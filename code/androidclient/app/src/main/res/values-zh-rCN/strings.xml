@@ -46,4 +46,7 @@
     <string name="title_record_path">记录路线</string>
     <string name="title_personal_center">个人中心</string>
 
+    <!-- Strings of title -->
+    <string name="title_setting">设置</string>
+
 </resources>

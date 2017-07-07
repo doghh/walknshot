@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_margin="10dp"
+            android:padding="10dp"
             android:text="@string/action_register"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="@color/white" />
