@@ -3,6 +3,7 @@ package cn.edu.sjtu.se.walknshot.androidclient;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -41,6 +42,10 @@ public class LoginActivity extends Activity implements OnClickListener {
         mBtnGoRegister = (TextView) findViewById(R.id.login_btn_register);
         mName = findViewById(R.id.login_input_name);
         mPsw = findViewById(R.id.login_input_psw);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("info", MODE_PRIVATE);
+        mName.setText(sharedPreferences.getString("username", ""));
+        mPsw.setText(sharedPreferences.getString("password", ""));
 
         mBtnLogin.setOnClickListener(this);
         mBtnGoRegister.setOnClickListener(this);
