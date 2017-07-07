@@ -1,5 +1,6 @@
 package cn.edu.sjtu.se.walknshot.androidclient;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 
-public class MapPageFragment extends android.app.Fragment {
+public class MapPageFragment extends Fragment {
 
     private MapView mMap;
     private GoogleMap googleMap;
@@ -30,7 +31,7 @@ public class MapPageFragment extends android.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map,
+        View view = inflater.inflate(R.layout.fragment_map_page,
                 container, false);
         mMap = (MapView) view.findViewById(R.id.map);
         mMap.onCreate(savedInstanceState);

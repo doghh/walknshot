@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimary"
     tools:context="cn.edu.sjtu.se.walknshot.androidclient.LoginActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/login_btn_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_margin="10dp"
             android:text="@string/action_register"
             android:textAppearance="?android:textAppearanceMedium"
@@ -63,18 +63,73 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <include
+        <LinearLayout
             android:id="@+id/input_layout"
-            layout="@layout/input_login"
             android:layout_width="match_parent"
-            android:layout_height="130dip" />
+            android:layout_height="wrap_content"
+            android:layout_margin="20dip"
+            android:background="@drawable/bg_radius"
+            android:orientation="vertical"
+            android:padding="10dip">
 
-        <include
-            android:id="@+id/layout_progress"
-            layout="@layout/progress_login"
-            android:layout_width="match_parent"
-            android:layout_height="130dip"
-            android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/input_layout_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/icon_user"
+                    android:tint="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/login_input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:background="#00000000"
+                    android:hint="@string/prompt_account"
+                    android:padding="5dip"
+                    android:textColorHint="@color/lostGrey"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.01px"
+                android:layout_marginBottom="5dip"
+                android:layout_marginTop="5dip"
+                android:background="@color/lostGrey" />
+
+            <LinearLayout
+                android:id="@+id/input_layout_psw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/icon_psw"
+                    android:tint="@color/colorPrimaryDark" />
+
+                <EditText
+                    android:id="@+id/login_input_psw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:background="#00000000"
+                    android:hint="@string/prompt_password"
+                    android:inputType="textPassword"
+                    android:padding="5dip"
+                    android:textColorHint="@color/lostGrey"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/login_btn_login"

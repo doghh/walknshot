@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/androidclient.iml" filepath="$PROJECT_DIR$/androidclient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../apiclient/apiclient.iml" filepath="$PROJECT_DIR$/../apiclient/apiclient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../apimessages/apimessages.iml" filepath="$PROJECT_DIR$/../apimessages/apimessages.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

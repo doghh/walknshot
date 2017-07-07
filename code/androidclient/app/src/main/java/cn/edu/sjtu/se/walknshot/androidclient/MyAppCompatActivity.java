@@ -29,7 +29,7 @@ public class MyAppCompatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         initToolbar(R.id.toolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="cn.edu.sjtu.se.walknshot.androidclient.MainActivity">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -33,8 +33,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -43,17 +43,16 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/icon_walk"
+                    android:src="@drawable/icon_map"
                     android:tint="@color/colorPrimaryDark" />
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
                     android:text="@string/title_map"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="14dp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -76,12 +75,11 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:text="@string/title_record_path"
+                    android:text="Map"
                     android:textColor="@color/lostGrey"
-                    android:textSize="14dp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
@@ -109,7 +107,7 @@
                     android:layout_weight="1"
                     android:text="@string/title_personal_center"
                     android:textColor="@color/lostGrey"
-                    android:textSize="14dp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

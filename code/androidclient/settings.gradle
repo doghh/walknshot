@@ -1,1 +1,7 @@
 include ':app'
+
+include ":apiclient"
+project(":apiclient").projectDir = file("../apiclient")
+
+include ":apimessages"
+project(":apimessages").projectDir = file("../apimessages")

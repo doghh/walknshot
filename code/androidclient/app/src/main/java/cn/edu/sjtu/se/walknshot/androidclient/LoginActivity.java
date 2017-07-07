@@ -1,51 +1,46 @@
 package cn.edu.sjtu.se.walknshot.androidclient;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.LinearLayout;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.regex.Pattern;
+
 
 public class LoginActivity extends Activity implements OnClickListener {
 
     private TextView mBtnLogin, mBtnGoRegister;
 
-    private View progress;
-
-    private View mInputLayout;
-
-    private float mWidth, mHeight;
-
-    private LinearLayout mName, mPsw;
+    private EditText mName, mPsw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setStatusBarUpperAPI21();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setStatusBarUpperAPI19();
+        }
         initView();
     }
 
     private void initView() {
         mBtnLogin = (TextView) findViewById(R.id.login_btn_login);
         mBtnGoRegister = (TextView) findViewById(R.id.login_btn_register);
-        progress = findViewById(R.id.layout_progress);
-        mInputLayout = findViewById(R.id.input_layout);
-        mName = (LinearLayout) findViewById(R.id.input_layout_name);
-        mPsw = (LinearLayout) findViewById(R.id.input_layout_psw);
+        mName = findViewById(R.id.login_input_name);
+        mPsw = findViewById(R.id.login_input_psw);
 
         mBtnLogin.setOnClickListener(this);
         mBtnGoRegister.setOnClickListener(this);
@@ -57,18 +52,37 @@ public class LoginActivity extends Activity implements OnClickListener {
         switch (v.getId()) {
 
             case R.id.login_btn_login: {
-                mWidth = mBtnLogin.getMeasuredWidth();
-                mHeight = mBtnLogin.getMeasuredHeight();
 
-                mName.setVisibility(View.INVISIBLE);
-                mPsw.setVisibility(View.INVISIBLE);
+                String name = mName.getText().toString();
+                String psw = mPsw.getText().toString();
 
-                inputAnimator(mInputLayout, mWidth, mHeight);
+                // blank username or password
+                if ("".equals(name) || "".equals(psw)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.error_login_fail)
+                            .setMessage(R.string.error_blank_info)
+                            .create().show();
+                }
+                // invalid username
+                else if (!Pattern.matches("([a-z][a-z0-9_]{3,30})", name)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.error_login_fail)
+                            .setMessage(R.string.error_invalid_username)
+                            .create().show();
+                }
+                // invalid password
+                else if (psw.length() < 6) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.error_login_fail)
+                            .setMessage(R.string.error_invalid_password)
+                            .create().show();
+                } else {
+                    Intent intent = new Intent(this, LoginLoadingActivity.class);
+                    intent.putExtra("USERNAME", name);
+                    intent.putExtra("PASSWORD", psw);
+                    startActivityForResult(intent, 1);
+                }
 
-
-                // IF (checkUser())
-                Intent intent = new Intent(this, PersonalCenterFragment.class);
-                startActivity(intent);
                 break;
             }
 
@@ -78,75 +92,82 @@ public class LoginActivity extends Activity implements OnClickListener {
                 break;
             }
         }
-
     }
 
-    private void inputAnimator(final View view, float w, float h) {
-
-        AnimatorSet set = new AnimatorSet();
-
-        ValueAnimator animator = ValueAnimator.ofFloat(0, w);
-        animator.addUpdateListener(new AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (Float) animation.getAnimatedValue();
-                ViewGroup.MarginLayoutParams params = (MarginLayoutParams) view
-                        .getLayoutParams();
-                params.leftMargin = (int) value;
-                params.rightMargin = (int) value;
-                view.setLayoutParams(params);
-            }
-        });
-
-        ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout,
-                "scaleX", 1f, 0.5f);
-        set.setDuration(1000);
-        set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.playTogether(animator, animator2);
-        set.start();
-        set.addListener(new AnimatorListener() {
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-
-                progress.setVisibility(View.VISIBLE);
-                progressAnimator(progress);
-                mInputLayout.setVisibility(View.INVISIBLE);
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    String loginStatus = data.getStringExtra("LOGIN_STATUS");
+                    if ("FAIL_NETWORK".equals(loginStatus)) {
+                        new AlertDialog.Builder(this)
+                                .setTitle(R.string.error_login_fail)
+                                .setMessage(R.string.error_network_fail)
+                                .create().show();
+                    } else if ("FAIL".equals(loginStatus)) {
+                        new AlertDialog.Builder(this)
+                                .setTitle(R.string.error_login_fail)
+                                .setMessage(R.string.error_incorrect_password)
+                                .create().show();
+                    } else if ("SUCCESS".equals(loginStatus)) {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+            default:
+        }
     }
 
-    private void progressAnimator(final View view) {
-        PropertyValuesHolder animator = PropertyValuesHolder.ofFloat("scaleX",
-                0.5f, 1f);
-        PropertyValuesHolder animator2 = PropertyValuesHolder.ofFloat("scaleY",
-                0.5f, 1f);
-        ObjectAnimator animator3 = ObjectAnimator.ofPropertyValuesHolder(view,
-                animator, animator2);
-        animator3.setDuration(1000);
-        animator3.setInterpolator(new JellyInterpolator());
-        animator3.start();
+    private void setStatusBarUpperAPI21() {
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //设置状态栏颜色
+        window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        ViewGroup mContentView = findViewById(Window.ID_ANDROID_CONTENT);
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, true);
+        }
+    }
 
+    private void setStatusBarUpperAPI19() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        ViewGroup mContentView = findViewById(Window.ID_ANDROID_CONTENT);
+        int statusBarHeight = getStatusBarHeight();
+        int statusColor = getResources().getColor(R.color.colorPrimary);
+
+        View mTopView = mContentView.getChildAt(0);
+        if (mTopView != null && mTopView.getLayoutParams() != null &&
+                mTopView.getLayoutParams().height == statusBarHeight) {
+            //避免重复添加 View
+            mTopView.setBackgroundColor(statusColor);
+            return;
+        }
+        //使 ChildView 预留空间
+        if (mTopView != null) {
+            ViewCompat.setFitsSystemWindows(mTopView, true);
+        }
+        //添加假 View
+        mTopView = new View(this);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight);
+        mTopView.setBackgroundColor(statusColor);
+        mContentView.addView(mTopView, 0, lp);
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resId > 0) {
+            result = getResources().getDimensionPixelSize(resId);
+        }
+        return result;
     }
 }
 
