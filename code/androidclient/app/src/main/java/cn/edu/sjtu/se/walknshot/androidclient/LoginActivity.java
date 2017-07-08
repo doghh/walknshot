@@ -1,7 +1,6 @@
 package cn.edu.sjtu.se.walknshot.androidclient;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -21,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends Activity implements OnClickListener {
 
-    private TextView mBtnLogin, mBtnGoRegister;
+    private TextView mBtnLogin, mBtnGoRegister, mBtnForgetPsw;
 
     private EditText mName, mPsw;
 
@@ -40,6 +39,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     private void initView() {
         mBtnLogin = (TextView) findViewById(R.id.login_btn_login);
         mBtnGoRegister = (TextView) findViewById(R.id.login_btn_register);
+        mBtnForgetPsw = (TextView) findViewById(R.id.login_btn_forget_pw);
         mName = findViewById(R.id.login_input_name);
         mPsw = findViewById(R.id.login_input_psw);
 
@@ -49,6 +49,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
         mBtnLogin.setOnClickListener(this);
         mBtnGoRegister.setOnClickListener(this);
+        mBtnForgetPsw.setOnClickListener(this);
     }
 
     @Override
@@ -63,24 +64,15 @@ public class LoginActivity extends Activity implements OnClickListener {
 
                 // blank username or password
                 if ("".equals(name) || "".equals(psw)) {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.error_login_fail)
-                            .setMessage(R.string.error_blank_info)
-                            .create().show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_blank_info, Toast.LENGTH_SHORT).show();
                 }
                 // invalid username
                 else if (!Pattern.matches("([a-z][a-z0-9_]{3,30})", name)) {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.error_login_fail)
-                            .setMessage(R.string.error_invalid_username)
-                            .create().show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_username, Toast.LENGTH_SHORT).show();
                 }
                 // invalid password
                 else if (psw.length() < 6) {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.error_login_fail)
-                            .setMessage(R.string.error_invalid_password)
-                            .create().show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_password, Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, LoginLoadingActivity.class);
                     intent.putExtra("USERNAME", name);
@@ -96,6 +88,11 @@ public class LoginActivity extends Activity implements OnClickListener {
                 startActivity(intent);
                 break;
             }
+
+            case R.id.login_btn_forget_pw: {
+                MyToast.makeText(getApplicationContext(), "呵呵，密码都能忘，可以说非常豹笑了", Toast.LENGTH_SHORT).show();
+                break;
+            }
         }
     }
 
@@ -106,20 +103,14 @@ public class LoginActivity extends Activity implements OnClickListener {
                 if (resultCode == RESULT_OK) {
                     String loginStatus = data.getStringExtra("LOGIN_STATUS");
                     if ("FAIL_NETWORK".equals(loginStatus)) {
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.error_login_fail)
-                                .setMessage(R.string.error_network_fail)
-                                .create().show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, Toast.LENGTH_SHORT).show();
                     } else if ("FAIL".equals(loginStatus)) {
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.error_login_fail)
-                                .setMessage(R.string.error_incorrect_password)
-                                .create().show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_login_fail, Toast.LENGTH_SHORT).show();
                     } else if ("SUCCESS".equals(loginStatus)) {
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                        Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;

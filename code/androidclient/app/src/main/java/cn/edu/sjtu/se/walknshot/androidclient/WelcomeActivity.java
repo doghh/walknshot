@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -16,7 +17,6 @@ public class WelcomeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         // 取消状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -27,6 +27,7 @@ public class WelcomeActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         // 启动界面
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
         // 背景透明度变化2秒内从0.0变到1.0
@@ -53,5 +54,14 @@ public class WelcomeActivity extends Activity {
             }
         };
         timer.schedule(timerTask, 3000);
+    }
+
+    // 启动界面禁用Back键退出，避免多次启动login界面
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -38,33 +38,21 @@ public class RegisterActivity extends MyAppCompatActivity implements OnClickList
 
         // blank username
         if ("".equals(username) || "".equals(password) || "".equals(passwordConfirm)) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.error_register_fail)
-                    .setMessage(R.string.error_blank_info)
-                    .create().show();
+            MyToast.makeText(getApplicationContext(), R.string.error_blank_info, Toast.LENGTH_SHORT).show();
         }
         // invalid username
         else if (!Pattern.matches("([a-z][a-z0-9_]{3,30})", username)) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.error_register_fail)
-                    .setMessage(R.string.error_invalid_username)
-                    .create().show();
+            MyToast.makeText(getApplicationContext(), R.string.error_invalid_username, Toast.LENGTH_SHORT).show();
         }
         // invalid password
         else if (password.length() < 6) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.error_register_fail)
-                    .setMessage(R.string.error_invalid_password)
-                    .create().show();
+            MyToast.makeText(getApplicationContext(), R.string.error_invalid_password, Toast.LENGTH_SHORT).show();
             mPassword.setText("");
             mPasswordConfirm.setText("");
         }
         // password confirming fails
         else if (!passwordConfirm.equals(password)) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.error_register_fail)
-                    .setMessage(R.string.error_invalid_password_confrim)
-                    .create().show();
+            MyToast.makeText(getApplicationContext(), R.string.error_invalid_password_confrim, Toast.LENGTH_SHORT).show();
             mPassword.setText("");
             mPasswordConfirm.setText("");
         } else {
@@ -82,15 +70,9 @@ public class RegisterActivity extends MyAppCompatActivity implements OnClickList
                 if (resultCode == RESULT_OK) {
                     String status = data.getStringExtra("REGISTER_STATUS");
                     if ("FAIL_NETWORK".equals(status)) {
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.error_register_fail)
-                                .setMessage(R.string.error_network_fail)
-                                .create().show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, Toast.LENGTH_SHORT).show();
                     } else if ("FAIL".equals(status)) {
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.error_register_fail)
-                                .setMessage(R.string.error_username_exist)
-                                .create().show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_username_exist, Toast.LENGTH_SHORT).show();
                         mPassword.setText("");
                         mPasswordConfirm.setText("");
                     } else if ("SUCCESS".equals(status)) {
