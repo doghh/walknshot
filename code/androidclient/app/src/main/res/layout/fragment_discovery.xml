@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.edu.sjtu.se.walknshot.androidclient.RecordPathFragment">
+    tools:context="cn.edu.sjtu.se.walknshot.androidclient.DiscoveryFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/title_record_path"
+            android:text="@string/title_discovery"
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white" />
 

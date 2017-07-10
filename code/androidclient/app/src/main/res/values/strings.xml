@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">WalkNShot</string>
 
+    <!-- General Hints -->
+    <string name="reply_go">Go</string>
+    <string name="reply_cancel">Cancel</string>
+    <string name="reply_ok">OK</string>
     <string name="loading">Wait a minute…</string>
     <string name="login_success">Login successfully</string>
     <string name="register_success">Sign up successfully</string>
+    <string name="hint_start_record_path">Ready to walk and shot?</string>
+    <string name="hint_end_record_path">The path will end in this position</string>
 
     <!-- Strings related to login and register -->
 
@@ -46,7 +52,7 @@
 
     <!-- Strings related to bottom bar -->
     <string name="title_map">Map</string>
-    <string name="title_record_path">Walk</string>
+    <string name="title_discovery">Discover</string>
     <string name="title_personal_center">Me</string>
 
     <!-- Strings of title -->

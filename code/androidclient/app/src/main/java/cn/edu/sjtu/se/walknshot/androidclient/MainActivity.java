@@ -3,22 +3,20 @@ package cn.edu.sjtu.se.walknshot.androidclient;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
     private MapPageFragment mapPageFragment;
-    private RecordPathFragment recordPathFragment;
+    private DiscoveryFragment discoveryFragment;
     private PersonalCenterFragment personalCenterFragment;
 
     private int currentId = R.id.tab_map_page;
 
-    private LinearLayout mMapPage, mRecordPath, mPersonalCenter;
+    private LinearLayout mMapPage, mDiscovery, mPersonalCenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +24,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mMapPage = findViewById(R.id.tab_map_page);
-        mRecordPath = findViewById(R.id.tab_record_path);
+        mDiscovery = findViewById(R.id.tab_dicovery);
         mPersonalCenter = findViewById(R.id.tab_personal_center);
 
         //默认首页为MapPage
@@ -36,7 +34,7 @@ public class MainActivity extends Activity {
 
         //为3个tab设置监听
         mMapPage.setOnClickListener(tabClickListener);
-        mRecordPath.setOnClickListener(tabClickListener);
+        mDiscovery.setOnClickListener(tabClickListener);
         mPersonalCenter.setOnClickListener(tabClickListener);
     }
 
@@ -68,12 +66,12 @@ public class MainActivity extends Activity {
                 }
                 break;
             }
-            case R.id.tab_record_path: {
-                if (recordPathFragment == null) {
-                    recordPathFragment = new RecordPathFragment();
-                    transaction.add(R.id.main_content, recordPathFragment);
+            case R.id.tab_dicovery: {
+                if (discoveryFragment == null) {
+                    discoveryFragment = new DiscoveryFragment();
+                    transaction.add(R.id.main_content, discoveryFragment);
                 } else {
-                    transaction.show(recordPathFragment);
+                    transaction.show(discoveryFragment);
                 }
                 break;
             }
@@ -98,8 +96,8 @@ public class MainActivity extends Activity {
     private void hideFragments(FragmentTransaction transaction) {
         if (mapPageFragment != null)//不为空才隐藏,如果不判断第一次会有空指针异常
             transaction.hide(mapPageFragment);
-        if (recordPathFragment != null)
-            transaction.hide(recordPathFragment);
+        if (discoveryFragment != null)
+            transaction.hide(discoveryFragment);
         if (personalCenterFragment != null)
             transaction.hide(personalCenterFragment);
     }
@@ -111,15 +109,15 @@ public class MainActivity extends Activity {
      */
     private void changeSelect(int resId) {
         mMapPage.setSelected(false);
-        mRecordPath.setSelected(false);
+        mDiscovery.setSelected(false);
         mPersonalCenter.setSelected(false);
 
         switch (resId) {
             case R.id.tab_map_page:
                 mMapPage.setSelected(true);
                 break;
-            case R.id.tab_record_path:
-                mRecordPath.setSelected(true);
+            case R.id.tab_dicovery:
+                mDiscovery.setSelected(true);
                 break;
             case R.id.tab_personal_center:
                 mPersonalCenter.setSelected(true);
@@ -138,4 +136,5 @@ public class MainActivity extends Activity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }

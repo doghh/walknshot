@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ClientImpl implements Client {
     private Token token;
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://192.168.1.224:8080";
 
     private static ClientImpl singleton = new ClientImpl();
 
