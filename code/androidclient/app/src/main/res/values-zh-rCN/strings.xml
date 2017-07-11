@@ -1,39 +1,23 @@
 <resources>
     <string name="app_name">边走边拍</string>
 
-    <!-- General Hints -->
-    <string name="reply_go">开始吧</string>
-    <string name="reply_cancel">取消</string>
-    <string name="reply_ok">确定</string>
-    <string name="loading">请稍等……</string>
-    <string name="login_success">登陆成功</string>
-    <string name="register_success">注册成功</string>
-    <string name="hint_start_record_path">准备好开始你的行程了吗？</string>
-    <string name="hint_end_record_path">确定要结束你的行程吗？</string>
-
-    <!-- Strings related to login -->
-
-    <!-- Welcome head -->
+    <!-- Welcome -->
     <string name="head_welcome">秀出你的精彩生活</string>
     <string name="head_register">创建账号</string>
 
-    <!-- Hint for input -->
+    <!-- Login and Register -->
     <string name="prompt_account">用户名/邮箱</string>
     <string name="prompt_username">用户名</string>
     <string name="prompt_email">邮箱</string>
-    <string name="prompt_password_cfm">确认密码</string>
     <string name="prompt_password">密码</string>
-
-    <!-- Button string -->
+    <string name="prompt_password_cfm">确认密码</string>
     <string name="action_login">登陆</string>
-    <string name="action_sign_up">加入边走边拍</string>
     <string name="action_register">注册</string>
     <string name="action_forget_psw">忘记密码？</string>
-
-    <!-- Error info -->
+    <string name="action_sign_up">加入边走边拍</string>
     <string name="error_login_fail">登陆失败</string>
     <string name="error_register_fail">注册失败</string>
-    <string name="error_blank_info">用户名或密码不能为空</string>
+    <string name="error_invalid_blank">用户名或密码不能为空</string>
     <string name="error_invalid_username">用户名不正确</string>
     <string name="error_invalid_password">密码长度不足（至少6位）</string>
     <string name="error_invalid_password_confrim">两次输入的密码不一致</string>
@@ -42,17 +26,31 @@
     <string name="error_incorrect_password">密码错误</string>
     <string name="error_network_fail">网络连接失败</string>
     <string name="error_field_required">此项必填</string>
+    <string name="login_success">登陆成功</string>
+    <string name="register_success">注册成功</string>
     <string name="loading_login">正在登录……</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="loading">请稍等……</string>
 
-    <!-- Strings related to bottom bar -->
+    <!-- MapPage -->
+    <string name="hint_start_record_path">准备好开始你的行程了吗？</string>
+    <string name="hint_end_record_path">确定要结束你的行程吗？</string>
+    <string name="reply_go">开始吧</string>
+    <string name="reply_cancel">取消</string>
+    <string name="reply_ok">确定</string>
+
+    <!-- Settings -->
+    <string name="action_exit">退出登录</string>
+
+    <!-- Bar -->
     <string name="title_map">地图</string>
     <string name="title_discovery">发现</string>
     <string name="title_personal_center">我的</string>
-
-    <!-- Strings of title -->
     <string name="title_setting">设置</string>
 
+    <!-- Permissions -->
+    <string name="permission_rationale_location">该应用需要访问位置权限才能启动主界面，否则地图功能不可用。</string>
+    <string name="location_permission_denied">该应用需要访问位置权限才能启动主界面，请重试并授予该应用访问权限。\n如果设置了禁用该权限，可以从“系统设置” &gt; “应用管理” &gt; “边走边拍” &gt; “权限”中开启。</string>
+    <string name="permission_required_toast">启动主界面需要访问位置权限</string>
+
 </resources>
+

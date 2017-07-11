@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="180dp"
     android:layout_height="180dp"
+    android:background="@drawable/bg_radius_white"
     android:gravity="center"
-    android:background="@drawable/bg_radius_light"
     android:orientation="vertical">
 
     <ProgressBar
@@ -12,7 +12,8 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:indeterminateTint="@color/colorAccent" />
 
     <TextView
         android:id="@+id/loading_hint"
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/loading"
+        android:textAllCaps="true"
         android:textColor="@color/colorAccent"
         android:textSize="20sp" />
 

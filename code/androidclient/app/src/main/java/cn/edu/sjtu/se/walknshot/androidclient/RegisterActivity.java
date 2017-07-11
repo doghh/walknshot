@@ -1,6 +1,5 @@
 package cn.edu.sjtu.se.walknshot.androidclient;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +37,7 @@ public class RegisterActivity extends MyAppCompatActivity implements OnClickList
 
         // blank username
         if ("".equals(username) || "".equals(password) || "".equals(passwordConfirm)) {
-            MyToast.makeText(getApplicationContext(), R.string.error_blank_info, Toast.LENGTH_SHORT).show();
+            MyToast.makeText(getApplicationContext(), R.string.error_invalid_blank, Toast.LENGTH_SHORT).show();
         }
         // invalid username
         else if (!Pattern.matches("([a-z][a-z0-9_]{3,30})", username)) {

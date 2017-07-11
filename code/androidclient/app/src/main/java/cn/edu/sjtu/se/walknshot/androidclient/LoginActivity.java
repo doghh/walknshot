@@ -64,7 +64,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
                 // blank username or password
                 if ("".equals(name) || "".equals(psw)) {
-                    MyToast.makeText(getApplicationContext(), R.string.error_blank_info, Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_blank, Toast.LENGTH_SHORT).show();
                 }
                 // invalid username
                 else if (!Pattern.matches("([a-z][a-z0-9_]{3,30})", name)) {

@@ -25,14 +25,14 @@
             style="@style/ButtonRoundTheme"
             android:layout_alignParentTop="true"
             android:src="@drawable/icon_start"
-            android:tint="@drawable/selector_start_button_color" />
+            android:tint="@drawable/selector_common_button_color" />
 
         <ImageButton
             android:id="@+id/main_btn_record_path_end"
             style="@style/ButtonRoundTheme"
             android:layout_alignParentTop="true"
             android:src="@drawable/icon_stop"
-            android:tint="@drawable/selector_end_button_color" />
+            android:tint="@drawable/selector_pink_button_color" />
 
         <ImageButton
             android:id="@+id/main_btn_photograph"

@@ -4,7 +4,8 @@
     <color name="colorPrimaryLight">#E0F7FA</color>
     <color name="colorPrimary">#80DEEA</color>
     <color name="colorPrimaryDark">#26C6DA</color>
-    <color name="colorAccent">#00838F</color>
+    <color name="colorPrimaryBlack">#00838F</color>
+    <color name="colorAccent">#F06292</color>
     <color name="lostGrey">#9E9E9E</color>
     <color name="tealLight">#4DB6AC</color>
     <color name="tealDark">#00695C</color>

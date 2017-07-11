@@ -47,7 +47,7 @@ public class LoginLoadingActivity extends Activity {
                 mEditor.putString("username", username);
                 mEditor.putString("password", password);
                 mEditor.putString("login", "yes");
-                mEditor.commit();
+                mEditor.apply();
 
                 Intent intent = new Intent();
                 intent.putExtra("LOGIN_STATUS", "SUCCESS");

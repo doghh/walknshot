@@ -1,39 +1,23 @@
 <resources>
     <string name="app_name">WalkNShot</string>
 
-    <!-- General Hints -->
-    <string name="reply_go">Go</string>
-    <string name="reply_cancel">Cancel</string>
-    <string name="reply_ok">OK</string>
-    <string name="loading">Wait a minute…</string>
-    <string name="login_success">Login successfully</string>
-    <string name="register_success">Sign up successfully</string>
-    <string name="hint_start_record_path">Ready to walk and shot?</string>
-    <string name="hint_end_record_path">The path will end in this position</string>
-
-    <!-- Strings related to login and register -->
-
-    <!-- Welcome head -->
+    <!-- Welcome -->
     <string name="head_welcome">Show your beautiful life</string>
     <string name="head_register">Create your account</string>
 
-    <!-- Hint for input -->
+    <!-- Login and Register -->
     <string name="prompt_account">Username / E-mail</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_email">E-mail address</string>
-    <string name="prompt_password_cfm">Confirm Password</string>
     <string name="prompt_password">Password</string>
-
-    <!-- Button string -->
+    <string name="prompt_password_cfm">Confirm Password</string>
     <string name="action_login">Login</string>
-    <string name="action_sign_up">JOIN WalkNShot</string>
     <string name="action_register">Sign up</string>
     <string name="action_forget_psw">Forget Password?</string>
-
-    <!-- Error info -->
+    <string name="action_sign_up">JOIN WalkNShot</string>
     <string name="error_login_fail">Login failed</string>
     <string name="error_register_fail">Register failed</string>
-    <string name="error_blank_info">Username or password cannot be empty</string>
+    <string name="error_invalid_blank">Username or password cannot be empty</string>
     <string name="error_invalid_username">This username is invalid</string>
     <string name="error_invalid_password">This password is too short (at least 6)</string>
     <string name="error_invalid_password_confrim">The two password you input are inconsistent</string>
@@ -42,20 +26,30 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_network_fail">The networking connection fails</string>
     <string name="error_field_required">This field is required</string>
+    <string name="login_success">Login successfully</string>
+    <string name="register_success">Sign up successfully</string>
     <string name="loading_login">Logging in…</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="loading">Wait a minute…</string>
 
-    <!-- / Strings related to login and register -->
+    <!-- MapPage -->
+    <string name="hint_start_record_path">Ready to walk and shot?</string>
+    <string name="hint_end_record_path">The path will end in this position</string>
+    <string name="reply_go">Go</string>
+    <string name="reply_cancel">Cancel</string>
+    <string name="reply_ok">OK</string>
 
+    <!-- Settings -->
+    <string name="action_exit">Exit</string>
 
-    <!-- Strings related to bottom bar -->
+    <!-- Bar -->
     <string name="title_map">Map</string>
     <string name="title_discovery">Discover</string>
     <string name="title_personal_center">Me</string>
-
-    <!-- Strings of title -->
     <string name="title_setting">Settings</string>
+
+    <!-- Permissions -->
+    <string name="permission_rationale_location">This app requires location permission to start the main interface, or the map can\'t be used.</string>
+    <string name="location_permission_denied">This app requires location permission to start the main interface. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; WalkNShot &gt; Permissions.</string>
+    <string name="permission_required_toast">location permission is required for this app</string>
 
 </resources>
