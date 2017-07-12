@@ -26,7 +26,7 @@ public class SettingActivity extends MyAppCompatActivity {
     public void logout(View view) {
         final SettingActivity This = this;
         new AlertDialog.Builder(this)
-                .setMessage("确认退出吗？")
+                .setMessage(R.string.hint_start_exit)
                 .setPositiveButton(R.string.reply_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

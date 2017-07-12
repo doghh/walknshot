@@ -40,6 +40,7 @@
 
     <!-- Settings -->
     <string name="action_exit">退出登录</string>
+    <string name="hint_start_exit">确定要退出此账号吗？</string>
 
     <!-- Bar -->
     <string name="title_map">地图</string>
@@ -49,7 +50,7 @@
 
     <!-- Permissions -->
     <string name="permission_rationale_location">该应用需要访问位置权限才能启动主界面，否则地图功能不可用。</string>
-    <string name="location_permission_denied">该应用需要访问位置权限才能启动主界面，请重试并授予该应用访问权限。\n如果设置了禁用该权限，可以从“系统设置” &gt; “应用管理” &gt; “边走边拍” &gt; “权限”中开启。</string>
+    <string name="location_permission_denied">该应用需要访问位置权限才能启动主界面，请重试并授予该应用访问权限。\n如果设置了禁用该权限，可以从“系统设置”&gt;“应用管理”&gt;“边走边拍”&gt;“权限”中开启。</string>
     <string name="permission_required_toast">启动主界面需要访问位置权限</string>
 
 </resources>

@@ -4,17 +4,22 @@ import android.Manifest;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,8 +27,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MapPageFragment extends Fragment implements
-        GoogleMap.OnMyLocationButtonClickListener,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+        GoogleMap.OnMyLocationButtonClickListener {
 
     private static final String TAG = MapPageFragment.class.getSimpleName();
     private MapView mMap;
@@ -35,16 +39,15 @@ public class MapPageFragment extends Fragment implements
     private final LatLng mDefaultLocation = new LatLng(39.98871, 116.43234);
     private static final int DEFAULT_ZOOM = 15;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private boolean mPermissionDenied = false;
-
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
-    private Location mLastKnownLocation;
+    public boolean mPermissionDenied = false;
 
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+    // The geographical location where the device is currently located. That is, the last-known
+    // location retrieved by the Fused Location Provider.
+    private Location mLastKnownLocation;
 
     private ImageButton mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
 
@@ -54,31 +57,18 @@ public class MapPageFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_map_page,
                 container, false);
 
-        // init views
-        initButtonView(rootView);
-        mMap = (MapView) rootView.findViewById(R.id.map);
-        mMap.onCreate(savedInstanceState);
-
-        // get and init GoogleMap googleMap
-        mMap.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                mGoogleMap = googleMap;
-                initGoogleMap();
-            }
-        });
-
-        return rootView;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+
+        // init views
+        mMap = (MapView) rootView.findViewById(R.id.map);
+        mMap.onCreate(savedInstanceState);
+        initButtonView(rootView);
+
+        return rootView;
     }
 
     @Override
@@ -102,12 +92,12 @@ public class MapPageFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        mMap.onResume();
         if (mPermissionDenied) {
             // Permission was not granted, display error dialog.
             showMissingPermissionError();
             mPermissionDenied = false;
         }
-        mMap.onResume();
     }
 
     /**
@@ -121,10 +111,11 @@ public class MapPageFragment extends Fragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (mGoogleMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, mGoogleMap.getCameraPosition());
+            mCameraPosition = mGoogleMap.getCameraPosition();
+            outState.putParcelable(KEY_CAMERA_POSITION, mCameraPosition);
             outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
-            super.onSaveInstanceState(outState);
         }
+        super.onSaveInstanceState(outState);
         mMap.onSaveInstanceState(outState);
     }
 
@@ -141,6 +132,8 @@ public class MapPageFragment extends Fragment implements
     }
 
     private void initButtonView(View view) {
+
+        // init custom button
         mBtnStartRecordPath = (ImageButton) view.findViewById(R.id.main_btn_record_path_begin);
         mBtnEndRecordPath = (ImageButton) view.findViewById(R.id.main_btn_record_path_end);
         mBtnGoPhotograph = (ImageButton) view.findViewById((R.id.main_btn_photograph));
@@ -189,13 +182,45 @@ public class MapPageFragment extends Fragment implements
 
     private void initGoogleMap() {
         mGoogleMap.setOnMyLocationButtonClickListener(this);
-        enableMyLocation();
+
+        // Enables the My Location layer if the fine location permission has been granted.
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mGoogleMap != null) {
+            // Access to the location has been granted to the app.
+            mGoogleMap.setMyLocationEnabled(true);
+        }
+
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        mLastKnownLocation = LocationServices.FusedLocationApi
+                .getLastLocation(((MainActivity) getActivity()).getGoogleApiClient());
+
+        // Set the map's camera position to the current location of the device.
+        if (mCameraPosition != null) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
+        } else if (mLastKnownLocation != null) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+            mCameraPosition = mGoogleMap.getCameraPosition();
+        } else {
+            Log.d(TAG, "Current location is null. Using defaults.");
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+            mCameraPosition = mGoogleMap.getCameraPosition();
+        }
+
     }
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
-    private void enableMyLocation() {
+    public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
@@ -209,28 +234,20 @@ public class MapPageFragment extends Fragment implements
 
     @Override
     public boolean onMyLocationButtonClick() {
-        MyToast.makeText(getActivity().getApplicationContext(), "MyLocation button clicked", MyToast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
-        }
-
-        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Enable the my location layer if the permission has been granted.
-            enableMyLocation();
-        } else {
-            // Display the missing permission error dialog when the fragments resume.
-            mPermissionDenied = true;
-        }
+    public void buildGoogleMap() {
+        // get and init GoogleMap googleMap
+        mMap.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mGoogleMap = googleMap;
+                initGoogleMap();
+            }
+        });
     }
 
 }

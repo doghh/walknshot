@@ -1,14 +1,28 @@
 package cn.edu.sjtu.se.walknshot.androidclient;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-public class MainActivity extends Activity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Places;
+
+public class MainActivity extends AppCompatActivity implements
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private MapPageFragment mapPageFragment;
     private DiscoveryFragment discoveryFragment;
@@ -18,14 +32,19 @@ public class MainActivity extends Activity {
 
     private LinearLayout mMapPage, mDiscovery, mPersonalCenter;
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    // The entry point to Google Play services, used by the Places API and Fused Location Provider.
+    public GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMapPage = findViewById(R.id.tab_map_page);
-        mDiscovery = findViewById(R.id.tab_dicovery);
-        mPersonalCenter = findViewById(R.id.tab_personal_center);
+        mMapPage = (LinearLayout) findViewById(R.id.tab_map_page);
+        mDiscovery = (LinearLayout) findViewById(R.id.tab_dicovery);
+        mPersonalCenter = (LinearLayout) findViewById(R.id.tab_personal_center);
 
         //默认首页为MapPage
         mMapPage.setSelected(true);
@@ -36,6 +55,18 @@ public class MainActivity extends Activity {
         mMapPage.setOnClickListener(tabClickListener);
         mDiscovery.setOnClickListener(tabClickListener);
         mPersonalCenter.setOnClickListener(tabClickListener);
+
+        // Build the Play services client for use by the Fused Location Provider and the Places API.
+        // Use the addApi() method to request the Google Places API and the Fused Location Provider.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */,
+                        this /* OnConnectionFailedListener */)
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
     private View.OnClickListener tabClickListener = new View.OnClickListener() {
@@ -125,6 +156,53 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * Builds the map when the Google Play services client is successfully connected.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        // Build the map.
+        mapPageFragment.buildGoogleMap();
+    }
+
+    /**
+     * Handles failure to connect to the Google Play services client.
+     */
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
+        // Refer to the reference doc for ConnectionResult to see what error codes might
+        // be returned in onConnectionFailed.
+        Log.d(TAG, "Play services connection failed: ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
+    }
+
+    /**
+     * Handles suspension of the connection to the Google Play services client.
+     */
+    @Override
+    public void onConnectionSuspended(int cause) {
+        Log.d(TAG, "Play services connection suspended");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
+        }
+
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Enable the my location layer if the permission has been granted.
+            mapPageFragment.enableMyLocation();
+        } else {
+            // Display the missing permission error dialog when the fragments resume.
+            mapPageFragment.mPermissionDenied = true;
+        }
+    }
+
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -137,4 +215,7 @@ public class MainActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    public GoogleApiClient getGoogleApiClient() {
+        return mGoogleApiClient;
+    }
 }
