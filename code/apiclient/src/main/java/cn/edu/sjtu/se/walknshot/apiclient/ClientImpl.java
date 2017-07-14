@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 public class ClientImpl implements Client {
     private Token token;
-    private String baseUrl = "http://localhost:8080";
+    private String baseUrl = "http://dorm.lvzheng.space:8080";
     private long lastSpot = 0;
 
     private static ClientImpl singleton = new ClientImpl();

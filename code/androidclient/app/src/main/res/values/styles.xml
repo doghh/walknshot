@@ -32,7 +32,7 @@
     <style name="ButtonRoundTheme">
         <item name="android:layout_width">54dp</item>
         <item name="android:layout_height">54dp</item>
-        <item name="android:background">@drawable/bg_rotate_white</item>
+        <item name="android:background">@drawable/bg_rotate_trans</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 

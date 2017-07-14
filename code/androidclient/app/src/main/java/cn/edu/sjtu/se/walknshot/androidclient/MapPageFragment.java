@@ -5,20 +5,24 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -26,6 +30,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
@@ -45,7 +50,15 @@ public class MapPageFragment extends Fragment {
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(39.98871, 116.43234);
     private static final int DEFAULT_ZOOM = 15;
-    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final long POLLING_FREQ = 1000 * 30;
+    private static final long FASTEST_UPDATE_FREQ = 1000 * 5;
+    private static final float ZINDEX_LEVEL_TOP = 4;
+    private static final float ZINDEX_LEVEL_3 = 3;
+    private static final float ZINDEX_LEVEL_2 = 2;
+    private static final float ZINDEX_LEVEL_1 = 1;
+    private static final float ZINDEX_LEVEL_BOTTOM = 0;
+
     public boolean mPermissionDenied = false;
 
     // Keys for storing activity state.
@@ -56,6 +69,7 @@ public class MapPageFragment extends Fragment {
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
     private Marker mMyLocationMarker;
+    private Circle mMyLocationCircle;
 
     private ImageButton mBtnMyLocation, mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
 
@@ -153,9 +167,16 @@ public class MapPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mLastKnownLocation != null) {
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(mLastKnownLocation.getLatitude(),
-                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    if (mGoogleMap.getCameraPosition().zoom >= DEFAULT_ZOOM) {
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(
+                                new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude())));
+                    } else {
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    }
+                    mCameraPosition = mGoogleMap.getCameraPosition();
                 }
             }
         });
@@ -218,14 +239,32 @@ public class MapPageFragment extends Fragment {
          * cases when a location is not available.
          */
 
+        // 谷歌自带的蓝标
+        // mGoogleMap.setMyLocationEnabled(true);
+
+        if (mMyLocationMarker == null) {
+            mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
+                    .icon(vectorToBitmap(R.drawable.icon_dot, Color.parseColor("#2979FF")))
+                    .anchor(0.5f, 0.5f)
+                    .zIndex(ZINDEX_LEVEL_TOP)
+                    .flat(true));
+        }
+
+        if (mMyLocationCircle == null) {
+            mMyLocationCircle = mGoogleMap.addCircle(new CircleOptions()
+                    .center(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
+                    .radius(30)
+                    .fillColor(Color.parseColor("#3C2979FF"))
+                    .strokeColor(Color.parseColor("#B42979FF"))
+                    .strokeWidth(3f)
+                    .zIndex(ZINDEX_LEVEL_1));
+        }
+
         mLastKnownLocation = LocationServices.FusedLocationApi
                 .getLastLocation(((MainActivity) getActivity()).getGoogleApiClient());
         correctLocation();
 
-        mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_blue_dot))
-                .flat(true));
 
         // Set the map's camera position to the current location of the device.
         if (mCameraPosition != null) {
@@ -255,10 +294,9 @@ public class MapPageFragment extends Fragment {
                             LOCATION_PERMISSION_REQUEST_CODE);
                 } else {
                     LocationRequest mLocationRequest = LocationRequest.create()
-                            //                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                            //                .setInterval(POLLING_FREQ)
-                            //                .setFastestInterval(FASTEST_UPDATE_FREQ)
-                            ;
+                            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                            .setInterval(POLLING_FREQ)
+                            .setFastestInterval(FASTEST_UPDATE_FREQ);
                     LocationServices.FusedLocationApi.requestLocationUpdates(
                             ((MainActivity) getActivity()).getGoogleApiClient(),
                             mLocationRequest,
@@ -281,7 +319,31 @@ public class MapPageFragment extends Fragment {
             mLastKnownLocation.setLatitude(latLng.latitude);
             mLastKnownLocation.setLongitude(latLng.longitude);
             //change blue dot and its circle
+            if (mMyLocationMarker != null) {
+                mMyLocationMarker.setPosition(latLng);
+            }
+            if (mMyLocationCircle != null) {
+                mMyLocationCircle.setCenter(latLng);
+            }
         }
+    }
+
+    /**
+     * Demonstrates converting a {@link Drawable} to a {@link BitmapDescriptor},
+     * for use as a marker icon.
+     */
+    private BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
+        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
+        Drawable vectorDrawableBg = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_dot_white, null);
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawableBg.getIntrinsicWidth(),
+                vectorDrawableBg.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawableBg.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawableBg.draw(canvas);
+        vectorDrawable.setBounds(6, 6, canvas.getWidth() - 6, canvas.getHeight() - 6);
+        DrawableCompat.setTint(vectorDrawable, color);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
 }
