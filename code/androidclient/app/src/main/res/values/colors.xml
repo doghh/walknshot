@@ -9,6 +9,7 @@
     <color name="lostGrey">#9E9E9E</color>
     <color name="tealLight">#4DB6AC</color>
     <color name="tealDark">#00695C</color>
-    <color name="pinkLight">#F06292</color>
+    <color name="pinkLight">#FCE4EC</color>
+    <color name="pinkPrimary">#F06292</color>
     <color name="pinkDark">#C2185B</color>
 </resources>

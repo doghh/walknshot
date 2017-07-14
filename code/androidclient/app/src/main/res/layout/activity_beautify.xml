@@ -22,8 +22,17 @@
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white" />
 
-    </android.support.v7.widget.Toolbar>
+        <ImageView
+            android:id="@+id/savePicture"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:maxHeight="24dp"
+            android:src="@drawable/icon_save"
+            android:tint="@color/white" />
 
+    </android.support.v7.widget.Toolbar>
 
     <!-- 显示图片 -->
     <LinearLayout
@@ -44,98 +53,69 @@
 
     </LinearLayout>
 
-    <!-- 底部按钮 -->
-    <LinearLayout
-        android:id="@+id/Layout_bottom"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="96dp"
+        android:scrollbarSize="2dp"
+        android:scrollbarThumbHorizontal="@drawable/bg_pink"
+        android:scrollbarStyle="insideOverlay">
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/Layout_bottom1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/Layout_bottom1"
+            <TextView
+                android:id="@+id/cancelBeautify"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:background="#b4ddea"
+                android:gravity="center"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:text="@string/cancelBeautify"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-                <TextView
-                    android:id="@+id/cancelBeautify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/bg_radius_light"
-                    android:gravity="center"
-                    android:paddingBottom="5dip"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip"
-                    android:paddingTop="5dip"
-                    android:text="@string/cancelBeautify"
-                    android:textAllCaps="true"
-                    android:textAppearance="?android:textAppearanceMedium" />
+            <TextView
+                android:id="@+id/oldRemember"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#ffe6c1"
+                android:gravity="center"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:text="@string/oldRemember"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-                <TextView
-                    android:id="@+id/oldRemember"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/bg_radius_light"
-                    android:gravity="center"
-                    android:paddingBottom="5dip"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip"
-                    android:paddingTop="5dip"
-                    android:text="@string/oldRemember"
-                    android:textAllCaps="true"
-                    android:textAppearance="?android:textAppearanceMedium" />
+            <TextView
+                android:id="@+id/sunShine"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#fff2e0"
+                android:gravity="center"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:text="@string/sunShine"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-                <TextView
-                    android:id="@+id/sunShine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/bg_radius_light"
-                    android:gravity="center"
-                    android:paddingBottom="5dip"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip"
-                    android:paddingTop="5dip"
-                    android:text="@string/sunShine"
-                    android:textAllCaps="true"
-                    android:textAppearance="?android:textAppearanceMedium" />
+            <TextView
+                android:id="@+id/sketch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#cbcbcb"
+                android:gravity="center"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:text="@string/sketch"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-                <TextView
-                    android:id="@+id/sketch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/bg_radius_light"
-                    android:gravity="center"
-                    android:paddingBottom="5dip"
-                    android:paddingLeft="20dip"
-                    android:paddingRight="20dip"
-                    android:paddingTop="5dip"
-                    android:text="@string/sketch"
-                    android:textAllCaps="true"
-                    android:textAppearance="?android:textAppearanceMedium" />
+        </LinearLayout>
 
-            </LinearLayout>
-
-        </HorizontalScrollView>
-
-
-        <Button
-            android:id="@+id/savePicture"
-            style="@style/ButtonCommonTheme"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/savePicture"
-            android:textAllCaps="true" />
-
-    </LinearLayout>
+    </HorizontalScrollView>
 
 </LinearLayout>

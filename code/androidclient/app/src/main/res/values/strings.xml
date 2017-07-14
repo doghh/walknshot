@@ -42,7 +42,7 @@
     <string name="title_beautifypictures">Beautify</string>
     <string name="submitPictures">Submit</string>
     <string name="shareToWeChat">Share</string>
-    <string name="hint_add_pictures">(hint: you can delete the picture by clicking on it)</string>
+    <string name="hint_add_pictures">(hint: pictures can be deleted by clicking)</string>
     <string name="savePicture">Save</string>
     <string name="cancelBeautify">Origin</string>
     <string name="oldRemember">Old Remember</string>

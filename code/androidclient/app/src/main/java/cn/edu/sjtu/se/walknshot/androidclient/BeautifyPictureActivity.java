@@ -22,7 +22,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity{
     private TextView sunShine;
     private TextView sketch;
     private TextView cancelBeautify;
-    private Button savePicture;
+    private ImageView savePicture;
     private Bitmap bmp;
     private Bitmap newbmp;
     private ImageView tempImage;
@@ -40,7 +40,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity{
         sketch.setOnClickListener(onClickListener);
         cancelBeautify = (TextView) findViewById(R.id.cancelBeautify);
         cancelBeautify.setOnClickListener(onClickListener);
-        savePicture = (Button) findViewById(R.id.savePicture);
+        savePicture = (ImageView) findViewById(R.id.savePicture);
         savePicture.setOnClickListener(onClickListener);
         tempImage = (ImageView) findViewById(R.id.tempImage);
 

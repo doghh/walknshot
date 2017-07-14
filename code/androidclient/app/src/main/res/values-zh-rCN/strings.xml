@@ -42,7 +42,7 @@
     <string name="title_beautifypictures">美化照片</string>
     <string name="submitPictures">提交</string>
     <string name="shareToWeChat">分享到微信</string>
-    <string name="hint_add_pictures">(友情提示:点击图片可以删除已添加图片)</string>
+    <string name="hint_add_pictures">（友情提示:点击图片可以删除已添加图片）</string>
     <string name="savePicture">保存</string>
     <string name="cancelBeautify">原图</string>
     <string name="oldRemember">怀旧</string>
