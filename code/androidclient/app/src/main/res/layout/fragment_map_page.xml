@@ -15,6 +15,26 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="128dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp">
+
+        <ImageButton
+            android:id="@+id/main_btn_my_location"
+            android:layout_height="54dp"
+            android:layout_width="54dp"
+            android:background="@drawable/bg_rotate_trans"
+            android:scaleType="center"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/icon_location"
+            android:tint="@color/lostGrey" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="128dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="24dp"

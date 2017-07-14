@@ -38,6 +38,17 @@
     <string name="reply_cancel">Cancel</string>
     <string name="reply_ok">OK</string>
 
+    <!-- AddPictures -->
+    <string name="title_beautifypictures">美化照片</string>
+    <string name="submitPictures">提交照片</string>
+    <string name="shareToWeChat">分享到微信</string>
+    <string name="hint_add_pictures">(友情提示:点击图片可以删除已添加图片)</string>
+    <string name="savePicture">保存照片</string>
+    <string name="cancelBeautify">撤销美化</string>
+    <string name="oldRemember">怀旧</string>
+    <string name="sunShine">光照</string>
+    <string name="sketch">素描</string>
+
     <!-- Settings -->
     <string name="action_exit">Exit</string>
     <string name="hint_start_exit">You will be logged off your account.</string>
@@ -47,6 +58,7 @@
     <string name="title_discovery">Discover</string>
     <string name="title_personal_center">Me</string>
     <string name="title_setting">Settings</string>
+    <string name="title_add_pictures">Add pictures</string>
 
     <!-- Permissions -->
     <string name="permission_rationale_location">This app requires location permission to start the main interface, or the map can\'t be used.</string>

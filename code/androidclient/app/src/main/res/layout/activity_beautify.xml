@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:toolbar="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="cn.edu.sjtu.se.walknshot.androidclient.AddPicturesActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        toolbar:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/title_beautifypictures"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/white" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- 显示图片 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <!-- 设置运行多行 设置圆角图形 黑色字体-->
+                <ImageView
+                    android:id="@+id/tempImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:layout_marginTop="30dip"
+                    android:contentDescription="@null"
+                    android:background="@drawable/bg_gridview"
+                    android:minHeight="300dip"
+                    android:minWidth="300dip" />
+            </LinearLayout>
+            <!-- 底部按钮 -->
+            <LinearLayout
+                android:id="@+id/Layout_bottom"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="15dip"
+                android:gravity="center" >
+
+                <LinearLayout
+                    android:id="@+id/Layout_bottom1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <TextView
+                        android:id="@+id/oldRemember"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="20dip"
+                        android:paddingRight="20dip"
+                        android:paddingTop="5dip"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/oldRemember"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/sunShine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="20dip"
+                        android:paddingRight="20dip"
+                        android:paddingTop="5dip"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/sunShine"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/sketch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="20dip"
+                        android:paddingRight="20dip"
+                        android:paddingTop="5dip"
+                        android:text="@string/sketch"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/Layout_bottom2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dip"
+                    android:gravity="center" >
+
+                    <TextView
+                        android:id="@+id/cancelBeautify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="20dip"
+                        android:paddingRight="20dip"
+                        android:paddingTop="5dip"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/cancelBeautify"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/savePicture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="20dip"
+                        android:paddingRight="20dip"
+                        android:paddingTop="5dip"
+                        android:text="@string/savePicture"
+                        android:textAllCaps="true"
+                        android:textSize="20sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

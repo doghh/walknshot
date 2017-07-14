@@ -3,6 +3,7 @@ package cn.edu.sjtu.se.walknshot.androidclient;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -23,11 +24,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapPageFragment extends Fragment implements
-        GoogleMap.OnMyLocationButtonClickListener {
+public class MapPageFragment extends Fragment {
 
     private static final String TAG = MapPageFragment.class.getSimpleName();
     private MapView mMap;
@@ -48,8 +53,9 @@ public class MapPageFragment extends Fragment implements
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
+    private Marker mMyLocationMarker;
 
-    private ImageButton mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
+    private ImageButton mBtnMyLocation, mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,12 +140,23 @@ public class MapPageFragment extends Fragment implements
     private void initButtonView(View view) {
 
         // init custom button
+        mBtnMyLocation = (ImageButton) view.findViewById(R.id.main_btn_my_location);
         mBtnStartRecordPath = (ImageButton) view.findViewById(R.id.main_btn_record_path_begin);
         mBtnEndRecordPath = (ImageButton) view.findViewById(R.id.main_btn_record_path_end);
         mBtnGoPhotograph = (ImageButton) view.findViewById((R.id.main_btn_photograph));
         // 刚开始隐藏结束按钮
         mBtnEndRecordPath.setVisibility(View.GONE);
         // 设置监听
+        mBtnMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mLastKnownLocation != null) {
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                }
+            }
+        });
         mBtnStartRecordPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,28 +195,41 @@ public class MapPageFragment extends Fragment implements
                         .show();
             }
         });
+        mBtnGoPhotograph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initGoogleMap() {
-        mGoogleMap.setOnMyLocationButtonClickListener(this);
-
         // Enables the My Location layer if the fine location permission has been granted.
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
             PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mGoogleMap != null) {
-            // Access to the location has been granted to the app.
-            mGoogleMap.setMyLocationEnabled(true);
         }
 
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+//        mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_blue_dot))
+//                .flat(true)
+//                .visible(false));
         mLastKnownLocation = LocationServices.FusedLocationApi
                 .getLastLocation(((MainActivity) getActivity()).getGoogleApiClient());
+        correctLocation();
+
+        mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_blue_dot))
+                .flat(true));
 
         // Set the map's camera position to the current location of the device.
         if (mCameraPosition != null) {
@@ -226,17 +256,7 @@ public class MapPageFragment extends Fragment implements
             // Permission to access the location is missing.
             PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mGoogleMap != null) {
-            // Access to the location has been granted to the app.
-            mGoogleMap.setMyLocationEnabled(true);
         }
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
     }
 
     public void buildGoogleMap() {
@@ -248,6 +268,21 @@ public class MapPageFragment extends Fragment implements
                 initGoogleMap();
             }
         });
+    }
+
+    public void setLastKnownLocation(Location location) {
+        mLastKnownLocation = location;
+        correctLocation();
+    }
+
+    private void correctLocation() {
+        if (mLastKnownLocation != null) {
+            LatLng latLng = TransformUtils.transformFromWGSToGCJ
+                    (mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            mLastKnownLocation.setLatitude(latLng.latitude);
+            mLastKnownLocation.setLongitude(latLng.longitude);
+            //change blue dot and its circle
+        }
     }
 
 }

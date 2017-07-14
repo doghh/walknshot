@@ -25,10 +25,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" android:exported="true" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".SettingActivity" />
+        <activity android:name=".AddPicturesActivity" />
+        <activity android:name=".BeautifyPictureActivity" />
         <activity
             android:name=".LoginLoadingActivity"
             android:theme="@style/WindowDialog" />
