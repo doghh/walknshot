@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +22,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity{
     private TextView sunShine;
     private TextView sketch;
     private TextView cancelBeautify;
-    private TextView savePicture;
+    private Button savePicture;
     private Bitmap bmp;
     private Bitmap newbmp;
     private ImageView tempImage;
@@ -39,7 +40,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity{
         sketch.setOnClickListener(onClickListener);
         cancelBeautify = (TextView) findViewById(R.id.cancelBeautify);
         cancelBeautify.setOnClickListener(onClickListener);
-        savePicture = (TextView) findViewById(R.id.savePicture);
+        savePicture = (Button) findViewById(R.id.savePicture);
         savePicture.setOnClickListener(onClickListener);
         tempImage = (ImageView) findViewById(R.id.tempImage);
 

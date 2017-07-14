@@ -39,15 +39,15 @@
     <string name="reply_ok">OK</string>
 
     <!-- AddPictures -->
-    <string name="title_beautifypictures">美化照片</string>
-    <string name="submitPictures">提交照片</string>
-    <string name="shareToWeChat">分享到微信</string>
-    <string name="hint_add_pictures">(友情提示:点击图片可以删除已添加图片)</string>
-    <string name="savePicture">保存照片</string>
-    <string name="cancelBeautify">撤销美化</string>
-    <string name="oldRemember">怀旧</string>
-    <string name="sunShine">光照</string>
-    <string name="sketch">素描</string>
+    <string name="title_beautifypictures">Beautify</string>
+    <string name="submitPictures">Submit</string>
+    <string name="shareToWeChat">Share</string>
+    <string name="hint_add_pictures">(hint: you can delete the picture by clicking on it)</string>
+    <string name="savePicture">Save</string>
+    <string name="cancelBeautify">Origin</string>
+    <string name="oldRemember">Old Remember</string>
+    <string name="sunShine">Sun Shine</string>
+    <string name="sketch">Sketch</string>
 
     <!-- Settings -->
     <string name="action_exit">Exit</string>

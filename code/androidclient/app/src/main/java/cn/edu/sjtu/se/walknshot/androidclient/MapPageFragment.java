@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,7 +45,7 @@ public class MapPageFragment extends Fragment {
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(39.98871, 116.43234);
     private static final int DEFAULT_ZOOM = 15;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public boolean mPermissionDenied = false;
 
     // Keys for storing activity state.
@@ -111,7 +113,7 @@ public class MapPageFragment extends Fragment {
      */
     private void showMissingPermissionError() {
         PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getFragmentManager(), "dialog");
+                .newInstance(true).show(getActivity().getFragmentManager(), "dialog");
     }
 
     @Override
@@ -204,24 +206,18 @@ public class MapPageFragment extends Fragment {
         });
     }
 
-    private void initGoogleMap() {
+    public void initGoogleMap() {
         // Enables the My Location layer if the fine location permission has been granted.
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
         }
-
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
-//        mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
-//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_blue_dot))
-//                .flat(true)
-//                .visible(false));
+
         mLastKnownLocation = LocationServices.FusedLocationApi
                 .getLastLocation(((MainActivity) getActivity()).getGoogleApiClient());
         correctLocation();
@@ -247,25 +243,28 @@ public class MapPageFragment extends Fragment {
 
     }
 
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     */
-    public void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(getActivity(), LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        }
-    }
-
     public void buildGoogleMap() {
         // get and init GoogleMap googleMap
         mMap.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mGoogleMap = googleMap;
-                initGoogleMap();
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                } else {
+                    LocationRequest mLocationRequest = LocationRequest.create()
+                            //                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                            //                .setInterval(POLLING_FREQ)
+                            //                .setFastestInterval(FASTEST_UPDATE_FREQ)
+                            ;
+                    LocationServices.FusedLocationApi.requestLocationUpdates(
+                            ((MainActivity) getActivity()).getGoogleApiClient(),
+                            mLocationRequest,
+                            (MainActivity) getActivity());
+                    initGoogleMap();
+                }
             }
         });
     }

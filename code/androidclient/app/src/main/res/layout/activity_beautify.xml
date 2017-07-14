@@ -24,128 +24,118 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <!-- 显示图片 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/tempImage"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!-- 显示图片 -->
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_gridview"
+            android:contentDescription="@null"
+            android:minHeight="300dip"
+            android:minWidth="300dip" />
+
+    </LinearLayout>
+
+    <!-- 底部按钮 -->
+    <LinearLayout
+        android:id="@+id/Layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-                <!-- 设置运行多行 设置圆角图形 黑色字体-->
-                <ImageView
-                    android:id="@+id/tempImage"
+                android:id="@+id/Layout_bottom1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/cancelBeautify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:layout_marginTop="30dip"
-                    android:contentDescription="@null"
-                    android:background="@drawable/bg_gridview"
-                    android:minHeight="300dip"
-                    android:minWidth="300dip" />
-            </LinearLayout>
-            <!-- 底部按钮 -->
-            <LinearLayout
-                android:id="@+id/Layout_bottom"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="15dip"
-                android:gravity="center" >
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_radius_light"
+                    android:gravity="center"
+                    android:paddingBottom="5dip"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip"
+                    android:paddingTop="5dip"
+                    android:text="@string/cancelBeautify"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
-                <LinearLayout
-                    android:id="@+id/Layout_bottom1"
-                    android:layout_width="fill_parent"
+                <TextView
+                    android:id="@+id/oldRemember"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center" >
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_radius_light"
+                    android:gravity="center"
+                    android:paddingBottom="5dip"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip"
+                    android:paddingTop="5dip"
+                    android:text="@string/oldRemember"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
-                    <TextView
-                        android:id="@+id/oldRemember"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_text"
-                        android:gravity="center"
-                        android:paddingBottom="5dip"
-                        android:paddingLeft="20dip"
-                        android:paddingRight="20dip"
-                        android:paddingTop="5dip"
-                        android:layout_marginEnd="10dp"
-                        android:text="@string/oldRemember"
-                        android:textAllCaps="true"
-                        android:textSize="20sp" />
-                    <TextView
-                        android:id="@+id/sunShine"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_text"
-                        android:gravity="center"
-                        android:paddingBottom="5dip"
-                        android:paddingLeft="20dip"
-                        android:paddingRight="20dip"
-                        android:paddingTop="5dip"
-                        android:layout_marginEnd="10dp"
-                        android:text="@string/sunShine"
-                        android:textAllCaps="true"
-                        android:textSize="20sp" />
-                    <TextView
-                        android:id="@+id/sketch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_text"
-                        android:gravity="center"
-                        android:paddingBottom="5dip"
-                        android:paddingLeft="20dip"
-                        android:paddingRight="20dip"
-                        android:paddingTop="5dip"
-                        android:text="@string/sketch"
-                        android:textAllCaps="true"
-                        android:textSize="20sp" />
-
-                    </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/Layout_bottom2"
-                    android:layout_width="fill_parent"
+                <TextView
+                    android:id="@+id/sunShine"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dip"
-                    android:gravity="center" >
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_radius_light"
+                    android:gravity="center"
+                    android:paddingBottom="5dip"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip"
+                    android:paddingTop="5dip"
+                    android:text="@string/sunShine"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
-                    <TextView
-                        android:id="@+id/cancelBeautify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_text"
-                        android:gravity="center"
-                        android:paddingBottom="5dip"
-                        android:paddingLeft="20dip"
-                        android:paddingRight="20dip"
-                        android:paddingTop="5dip"
-                        android:layout_marginEnd="10dp"
-                        android:text="@string/cancelBeautify"
-                        android:textAllCaps="true"
-                        android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/sketch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:background="@drawable/bg_radius_light"
+                    android:gravity="center"
+                    android:paddingBottom="5dip"
+                    android:paddingLeft="20dip"
+                    android:paddingRight="20dip"
+                    android:paddingTop="5dip"
+                    android:text="@string/sketch"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:textAppearanceMedium" />
 
-                    <TextView
-                        android:id="@+id/savePicture"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_text"
-                        android:gravity="center"
-                        android:paddingBottom="5dip"
-                        android:paddingLeft="20dip"
-                        android:paddingRight="20dip"
-                        android:paddingTop="5dip"
-                        android:text="@string/savePicture"
-                        android:textAllCaps="true"
-                        android:textSize="20sp" />
-                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+
+        </HorizontalScrollView>
+
+
+        <Button
+            android:id="@+id/savePicture"
+            style="@style/ButtonCommonTheme"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/savePicture"
+            android:textAllCaps="true" />
+
+    </LinearLayout>
 
 </LinearLayout>

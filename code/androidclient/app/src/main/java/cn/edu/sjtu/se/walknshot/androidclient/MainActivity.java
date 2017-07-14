@@ -172,18 +172,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onConnected(Bundle connectionHint) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        }
-        LocationRequest mLocationRequest = LocationRequest.create()
-//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-//                .setInterval(POLLING_FREQ)
-//                .setFastestInterval(FASTEST_UPDATE_FREQ)
-                ;
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         // Build the map.
         mapPageFragment.buildGoogleMap();
     }
@@ -211,17 +199,23 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
-        }
-
-        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Enable the my location layer if the permission has been granted.
-            mapPageFragment.enableMyLocation();
-        } else {
-            // Display the missing permission error dialog when the fragments resume.
-            mapPageFragment.mPermissionDenied = true;
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission Granted
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    LocationRequest mLocationRequest = LocationRequest.create()
+    //                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+    //                .setInterval(POLLING_FREQ)
+    //                .setFastestInterval(FASTEST_UPDATE_FREQ)
+                            ;
+                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    mapPageFragment.initGoogleMap();
+                }
+            } else {
+                mapPageFragment.mPermissionDenied = true;
+            }
         }
     }
 

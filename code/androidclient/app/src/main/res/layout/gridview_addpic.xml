@@ -21,6 +21,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:scaleType="fitXY"
-            android:src="@drawable/gridview_addpic" />
+            android:src="@drawable/icon_addpic" />
     </RelativeLayout>
 </LinearLayout>
