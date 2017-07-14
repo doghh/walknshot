@@ -29,6 +29,10 @@
         <property name="username" value="username"/>
         <property name="password" value="password"/>
     </bean>
+
+    <bean id="storageBasePath" class="java.lang.String">
+        <constructor-arg index="0" value="/path/to/storage"/>
+    </bean>
     -->
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -38,6 +42,18 @@
 
     <!-- Injections -->
 
+    <!-- DAOs -->
+
+    <bean id="pictureDAO" class="cn.edu.sjtu.se.walknshot.apiserver.daos.PictureDAO">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="spotDAO" class="cn.edu.sjtu.se.walknshot.apiserver.daos.SpotDAO">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="storageDAO" class="cn.edu.sjtu.se.walknshot.apiserver.daos.StorageDAO">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+        <constructor-arg name="basePath" ref="storageBasePath"/>
+    </bean>
     <bean id="tokenDAO" class="cn.edu.sjtu.se.walknshot.apiserver.daos.TokenDAO">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -45,12 +61,32 @@
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="authenticationService" class="cn.edu.sjtu.se.walknshot.apiserver.services.Authentication">
+    <!-- Services -->
+
+    <bean id="authenticationService" class="cn.edu.sjtu.se.walknshot.apiserver.services.AuthenticationService">
         <constructor-arg name="tokenDAO" ref="tokenDAO"/>
         <constructor-arg name="userDAO" ref="userDAO"/>
     </bean>
+    <bean id="journeyService" class="cn.edu.sjtu.se.walknshot.apiserver.services.JourneyService">
+        <constructor-arg name="spotDAO" ref="spotDAO"/>
+    </bean>
+    <bean id="pictureService" class="cn.edu.sjtu.se.walknshot.apiserver.services.PictureService">
+        <constructor-arg name="pictureDAO" ref="pictureDAO"/>
+        <constructor-arg name="spotDAO" ref="spotDAO"/>
+        <constructor-arg name="storageDAO" ref="storageDAO"/>
+    </bean>
+
+    <!-- Controllers -->
 
     <bean id="authenticationController" class="cn.edu.sjtu.se.walknshot.apiserver.controllers.AuthenticationController">
         <constructor-arg name="auth" ref="authenticationService"/>
+    </bean>
+    <bean id="journeyController" class="cn.edu.sjtu.se.walknshot.apiserver.controllers.JourneyController">
+        <constructor-arg name="auth" ref="authenticationService"/>
+        <constructor-arg name="jour" ref="journeyService"/>
+    </bean>
+    <bean id="pictureController" class="cn.edu.sjtu.se.walknshot.apiserver.controllers.PictureController">
+        <constructor-arg name="auth" ref="authenticationService"/>
+        <constructor-arg name="pic" ref="pictureService"/>
     </bean>
 </beans>

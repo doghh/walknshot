@@ -1,0 +1,9 @@
+<hibernate-mapping>
+    <class name="cn.edu.sjtu.se.walknshot.apiserver.entities.Picture" table="picture">
+        <id name="id" type="int" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="spotId" type="long" column="spotid"/>
+        <property name="storageId" type="int" column="storageid"/>
+    </class>
+</hibernate-mapping>

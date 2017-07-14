@@ -1,0 +1,8 @@
+<hibernate-mapping>
+    <class name="cn.edu.sjtu.se.walknshot.apiserver.entities.Storage" table="storage">
+        <id name="id" type="int" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="filename" type="string" column="filename" unique="true"/>
+    </class>
+</hibernate-mapping>

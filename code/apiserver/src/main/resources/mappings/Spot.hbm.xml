@@ -1,0 +1,11 @@
+<hibernate-mapping>
+    <class name="cn.edu.sjtu.se.walknshot.apiserver.entities.Spot" table="spot">
+        <id name="id" type="long" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="userId" type="int" column="uid"/>
+        <property name="latitude" type="double" column="latitude"/>
+        <property name="longitude" type="double" column="longitude"/>
+        <property name="time" type="timestamp" column="time"/>
+    </class>
+</hibernate-mapping>

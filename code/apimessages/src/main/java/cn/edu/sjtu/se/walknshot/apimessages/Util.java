@@ -12,4 +12,8 @@ public class Util {
     public static boolean validPassword(String password) {
         return password != null && password.length() >= 6;
     }
+
+    public static boolean validLatLng(double latitude, double longitude) {
+        return latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude < 180;
+    }
 }

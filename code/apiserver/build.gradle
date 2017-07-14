@@ -1,7 +1,10 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '1.5.4.RELEASE'
+}
+
 group 'cn.edu.sjtu.se.walknshot'
 version '1.0-SNAPSHOT'
-
-apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
@@ -9,11 +12,18 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'cn.edu.sjtu.se.walknshot.apiserver.SpringServer'
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     // Apache libs
     compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.1.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
 
     // Spring
     compile("org.springframework.boot:spring-boot-starter-web:1.5.4.RELEASE")
