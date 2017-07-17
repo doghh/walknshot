@@ -37,6 +37,9 @@
     <string name="reply_go">开始吧</string>
     <string name="reply_cancel">取消</string>
     <string name="reply_ok">确定</string>
+    <string name="log_start_record_path">开始记录路线</string>
+    <string name="log_end_record_path">记录结束</string>
+    <string name="error_location_loss">抱歉，无法识别定位</string>
 
     <!-- AddPictures -->
     <string name="title_beautifypictures">美化照片</string>
@@ -66,4 +69,3 @@
     <string name="permission_required_toast">启动主界面需要访问位置权限</string>
 
 </resources>
-

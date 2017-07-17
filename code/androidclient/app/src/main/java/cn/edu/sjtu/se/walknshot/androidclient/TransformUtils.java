@@ -1,11 +1,39 @@
 package cn.edu.sjtu.se.walknshot.androidclient;
 
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
 public class TransformUtils {
+
+    /**
+     * Demonstrates converting a {@link Drawable} to a {@link BitmapDescriptor},
+     * for use as a marker icon.
+     */
+    public static BitmapDescriptor vectorToBitmap(Resources resources, @DrawableRes int id, @ColorInt int color) {
+        Drawable vectorDrawable = ResourcesCompat.getDrawable(resources, id, null);
+        Drawable vectorDrawableBg = ResourcesCompat.getDrawable(resources, R.drawable.icon_dot_white, null);
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawableBg.getIntrinsicWidth(),
+                vectorDrawableBg.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawableBg.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawableBg.draw(canvas);
+        vectorDrawable.setBounds(6, 6, canvas.getWidth() - 6, canvas.getHeight() - 6);
+        DrawableCompat.setTint(vectorDrawable, color);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
     public static LatLng transformFromWGSToGCJ(double wgLat, double wgLng) {
 

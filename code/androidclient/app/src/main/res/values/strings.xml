@@ -37,6 +37,9 @@
     <string name="reply_go">Go</string>
     <string name="reply_cancel">Cancel</string>
     <string name="reply_ok">OK</string>
+    <string name="log_start_record_path">Begin to record path</string>
+    <string name="log_end_record_path">Recording has been closed</string>
+    <string name="error_location_loss">Sorry, can\'t get location </string>
 
     <!-- AddPictures -->
     <string name="title_beautifypictures">Beautify</string>

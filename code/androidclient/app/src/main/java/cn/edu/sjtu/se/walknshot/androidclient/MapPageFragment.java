@@ -5,24 +5,20 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -30,14 +26,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapPageFragment extends Fragment {
 
@@ -70,6 +70,11 @@ public class MapPageFragment extends Fragment {
     private Location mLastKnownLocation;
     private Marker mMyLocationMarker;
     private Circle mMyLocationCircle;
+
+    // The path
+    public boolean mRecordBegun = false;
+    private List<LatLng> mSpots = new ArrayList<>();
+    private Polyline mPath;
 
     private ImageButton mBtnMyLocation, mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
 
@@ -189,9 +194,8 @@ public class MapPageFragment extends Fragment {
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mBtnStartRecordPath.setVisibility(View.GONE);
-                                        mBtnEndRecordPath.setVisibility(View.VISIBLE);
                                         // start something
+                                        satrtRecordPath();
                                     }
                                 })
                         .setNegativeButton(R.string.reply_cancel, null)
@@ -211,6 +215,7 @@ public class MapPageFragment extends Fragment {
                                         mBtnEndRecordPath.setVisibility(View.GONE);
                                         mBtnStartRecordPath.setVisibility(View.VISIBLE);
                                         // stop something
+                                        endRecordPath();
                                     }
                                 })
                         .setNegativeButton(R.string.reply_cancel, null)
@@ -245,7 +250,7 @@ public class MapPageFragment extends Fragment {
         if (mMyLocationMarker == null) {
             mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
-                    .icon(vectorToBitmap(R.drawable.icon_dot, Color.parseColor("#2979FF")))
+                    .icon(TransformUtils.vectorToBitmap(getResources(), R.drawable.icon_dot, Color.parseColor("#2979FF")))
                     .anchor(0.5f, 0.5f)
                     .zIndex(ZINDEX_LEVEL_TOP)
                     .flat(true));
@@ -258,7 +263,7 @@ public class MapPageFragment extends Fragment {
                     .fillColor(Color.parseColor("#3C2979FF"))
                     .strokeColor(Color.parseColor("#B42979FF"))
                     .strokeWidth(3f)
-                    .zIndex(ZINDEX_LEVEL_1));
+                    .zIndex(ZINDEX_LEVEL_3));
         }
 
         mLastKnownLocation = LocationServices.FusedLocationApi
@@ -328,22 +333,81 @@ public class MapPageFragment extends Fragment {
         }
     }
 
-    /**
-     * Demonstrates converting a {@link Drawable} to a {@link BitmapDescriptor},
-     * for use as a marker icon.
-     */
-    private BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
-        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
-        Drawable vectorDrawableBg = ResourcesCompat.getDrawable(getResources(), R.drawable.icon_dot_white, null);
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawableBg.getIntrinsicWidth(),
-                vectorDrawableBg.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawableBg.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        vectorDrawableBg.draw(canvas);
-        vectorDrawable.setBounds(6, 6, canvas.getWidth() - 6, canvas.getHeight() - 6);
-        DrawableCompat.setTint(vectorDrawable, color);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    public void satrtRecordPath() {
+        if (mLastKnownLocation != null) {
+
+            // change button
+            mBtnStartRecordPath.setVisibility(View.GONE);
+            mBtnEndRecordPath.setVisibility(View.VISIBLE);
+
+            // change flag
+            mRecordBegun = true;
+
+            // init spots
+            LatLng startPoint = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            mSpots.clear();
+            mSpots.add(startPoint);
+
+            mPath = mGoogleMap.addPolyline(new PolylineOptions()
+                    .width(25)
+                    .color(Color.CYAN)
+                    .geodesic(true));
+
+            // start draw path
+            final MapPageFragment This = this;
+            new Thread(new Runnable() {//创建一个线程内部类
+                @Override
+                public void run() {
+                    This.updatePath(5000);
+                }
+            }).start();
+
+            // log
+            MyToast.makeText(getActivity().getApplicationContext(), R.string.log_start_record_path, Toast.LENGTH_SHORT).show();
+        } else {
+            MyToast.makeText(getActivity().getApplicationContext(), R.string.error_location_loss, Toast.LENGTH_SHORT).show();
+        }
     }
 
+    public void endRecordPath() {
+        mRecordBegun = false;
+        // 清除polyline
+        mPath.remove();
+        // log
+        MyToast.makeText(getActivity().getApplicationContext(), R.string.log_end_record_path, Toast.LENGTH_SHORT).show();
+    }
+
+    public void updatePath(long sec) {
+        while (mRecordBegun) {
+          //  LatLng newSpot = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            LatLng newSpot = new LatLng
+                    (mSpots.get(mSpots.size() - 1).latitude + 0.1, mSpots.get(mSpots.size() - 1).longitude + 0.1);
+            if (!newSpot.equals(mSpots.get(mSpots.size() - 1))) {
+                mSpots.add(newSpot);
+                // send message to update UI
+                Message msgMessage = new Message();
+                msgMessage.arg1 = 1;
+                mHandler.sendMessage(msgMessage);
+            }
+            // wait for 5s
+            try {
+                Thread.sleep(sec);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.arg1) {
+                case 1:
+                    if (mSpots.size() > 0) {
+                        mPath.setPoints(mSpots);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
