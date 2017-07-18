@@ -39,6 +39,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+import cn.edu.sjtu.se.walknshot.apiclient.*;
+
 public class AddPicturesActivity extends MyAppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -50,6 +52,8 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
     private ArrayList<Uri> imageUris;
     private SimpleAdapter simpleAdapter;     //适配器
 
+    private double latitude = 0.0;
+    private double longitude = 0.0;
 
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 2;
     private static final int NONE = 0;
@@ -83,6 +87,11 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
+
+        Intent intent =getIntent();
+        latitude=intent.getExtras().getDouble("latitude");
+        longitude=intent.getExtras().getDouble("longitude");
+
 
         //获取控件对象
         mGridView = (GridView) findViewById(R.id.add_pic_gridview);
@@ -212,6 +221,47 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
         @Override
         public void onClick(View v) {
             if (v == mBtnSubmitPic) { //提交照片
+                final Client client = ClientImpl.getInstance();
+                client.addSpot(new Callback() {
+                    @Override
+                    public void onNetworkFailure(IOException e) {
+                        Toast.makeText(AddPicturesActivity.this,"网络错误，请检查网络设置", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Object arg) {
+                        Toast.makeText(AddPicturesActivity.this,"图片上传失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onSuccess(Object arg) {
+                        for (int i = 1 ; i < imageItem.size() ; i++ ){
+                            Bitmap temp = (Bitmap) imageItem.get(i).get("itemImage");
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            temp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                            byte [] bitmapByte = baos.toByteArray();
+                            final int fi=i;
+
+                            client.uploadPicture(new Callback() {
+                                @Override
+                                public void onNetworkFailure(IOException e) {
+                                    Toast.makeText(AddPicturesActivity.this,"网络错误，请检查网络设置", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Object arg) {
+                                    Toast.makeText(AddPicturesActivity.this,"第"+fi+"张图片上传失败", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onSuccess(Object arg) {
+                                    Toast.makeText(AddPicturesActivity.this,"图片上传成功", Toast.LENGTH_SHORT).show();
+                                }
+                            }, bitmapByte);
+                        }
+                        Toast.makeText(AddPicturesActivity.this,"图片上传成功", Toast.LENGTH_SHORT).show();
+                    }
+                }, latitude, longitude);
 
             } else if (v == shareToWeChat) { //微信分享
                 Builder builder = new Builder(AddPicturesActivity.this);

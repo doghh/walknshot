@@ -227,6 +227,8 @@ public class MapPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
+                intent.putExtra("latitude", mLastKnownLocation.getLatitude());
+                intent.putExtra("longitude", mLastKnownLocation.getLongitude());
                 startActivity(intent);
             }
         });
@@ -259,7 +261,7 @@ public class MapPageFragment extends Fragment {
         if (mMyLocationCircle == null) {
             mMyLocationCircle = mGoogleMap.addCircle(new CircleOptions()
                     .center(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
-                    .radius(30)
+                    .radius(20)
                     .fillColor(Color.parseColor("#3C2979FF"))
                     .strokeColor(Color.parseColor("#B42979FF"))
                     .strokeWidth(3f)
@@ -379,9 +381,9 @@ public class MapPageFragment extends Fragment {
 
     public void updatePath(long sec) {
         while (mRecordBegun) {
-          //  LatLng newSpot = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-            LatLng newSpot = new LatLng
-                    (mSpots.get(mSpots.size() - 1).latitude + 0.1, mSpots.get(mSpots.size() - 1).longitude + 0.1);
+            LatLng newSpot = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            //LatLng newSpot = new LatLng
+            //        (mSpots.get(mSpots.size() - 1).latitude + 0.1, mSpots.get(mSpots.size() - 1).longitude + 0.1);
             if (!newSpot.equals(mSpots.get(mSpots.size() - 1))) {
                 mSpots.add(newSpot);
                 // send message to update UI
