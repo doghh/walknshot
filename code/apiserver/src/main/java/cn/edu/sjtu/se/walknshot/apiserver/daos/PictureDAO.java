@@ -12,7 +12,7 @@ public class PictureDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public Picture addPicture(long spotId, int storageId) {
+    public Picture addPicture(Long spotId, int storageId) {
         Picture picture = new Picture();
         picture.setSpotId(spotId);
         picture.setStorageId(storageId);

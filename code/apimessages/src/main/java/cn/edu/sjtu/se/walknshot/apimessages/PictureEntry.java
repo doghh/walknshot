@@ -2,7 +2,7 @@ package cn.edu.sjtu.se.walknshot.apimessages;
 
 public class PictureEntry {
     private int id;
-    private long spotId;
+    private Long spotId;
     private String storageName;
 
     public int getId() {
@@ -13,11 +13,11 @@ public class PictureEntry {
         this.id = id;
     }
 
-    public long getSpotId() {
+    public Long getSpotId() {
         return spotId;
     }
 
-    public void setSpotId(long spotId) {
+    public void setSpotId(Long spotId) {
         this.spotId = spotId;
     }
 

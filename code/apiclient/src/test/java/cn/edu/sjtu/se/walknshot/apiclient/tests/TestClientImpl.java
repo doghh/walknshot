@@ -3,9 +3,13 @@ package cn.edu.sjtu.se.walknshot.apiclient.tests;
 import cn.edu.sjtu.se.walknshot.apiclient.CallbackAutoNetworkFailure;
 import cn.edu.sjtu.se.walknshot.apiclient.Client;
 import cn.edu.sjtu.se.walknshot.apiclient.ClientImpl;
+import cn.edu.sjtu.se.walknshot.apimessages.PGroupDetails;
 import cn.edu.sjtu.se.walknshot.apimessages.PictureEntry;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestClientImpl {
     private static Client client;
@@ -50,7 +54,8 @@ public class TestClientImpl {
                 @Override
                 public void onSuccess(Object arg) {
                     System.out.println("Login valid: " + arg);
-                    testAddSpot();
+                    // testAddSpot();
+                    testUploadPGroup();
                 }
             });
     }
@@ -99,5 +104,26 @@ public class TestClientImpl {
                 System.out.println(new String((byte[]) arg));
             }
         }, picture.getStorageName());
+    }
+
+    private static void testUploadPGroup() {
+        List<byte[]> list = new ArrayList<>();
+        list.add("Hello".getBytes());
+        list.add("World".getBytes());
+        client.uploadPGroup(new CallbackAutoNetworkFailure() {
+            @Override
+            public void onFailure(Object arg) {
+                // NOP
+            }
+
+            @Override
+            public void onSuccess(Object arg) {
+                PGroupDetails details = (PGroupDetails) arg;
+                List<PictureEntry> pics = details.getPictures();
+                for (PictureEntry entry : pics) {
+                    System.out.println("PGroup: " + entry.getStorageName());
+                }
+            }
+        }, list);
     }
 }

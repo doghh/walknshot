@@ -75,6 +75,8 @@ public class StorageDAO {
             ostream.close();
             File newFile = new File(fullPath);
             FileUtils.moveFile(tmpFile, newFile);
+        } catch (FileExistsException e) {
+            // NOP
         } catch (IOException e) {
             return null;
         }

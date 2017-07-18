@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class PictureController {
@@ -32,7 +34,7 @@ public class PictureController {
     @ResponseBody
     public Object uploadPicture(
             @RequestParam("token") String sToken,
-            @RequestParam("spot") long spotId,
+            @RequestParam("spot") Long spotId,
             @RequestParam("file") MultipartFile file
             ) {
         Token token = Token.fromString(sToken);
@@ -60,6 +62,26 @@ public class PictureController {
         InputStreamResource isr = new InputStreamResource(pic.getPicture(filename));
         return new ResponseEntity<>(isr, HttpStatus.OK);
     }
+
+    @PostMapping("/pgroup/upload")
+    @ResponseBody
+    public Object uploadPGroup(
+            @RequestParam("token") String sToken,
+            @RequestParam("file[]") List<MultipartFile> files
+        ) {
+        Token token = Token.fromString(sToken);
+        if (!auth.validateToken(token))
+            return null;
+        List<InputStream> streamList = new ArrayList<>();
+        try {
+            for (MultipartFile file : files)
+                streamList.add(file.getInputStream());
+            return pic.storePGroup(token.getUserId(), streamList);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
     @ExceptionHandler(MultipartException.class)
     @ResponseBody
     public Object handleMultipartException(MultipartException e) {

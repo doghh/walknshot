@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS spot (
 
 CREATE TABLE IF NOT EXISTS picture (
 	id		INT NOT NULL AUTO_INCREMENT,
-	spotid		INT NOT NULL,
+	spotid		BIGINT,
 	storageid	INT NOT NULL,
 	PRIMARY KEY (id)
 );

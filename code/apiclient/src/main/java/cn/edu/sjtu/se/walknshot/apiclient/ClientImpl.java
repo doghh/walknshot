@@ -1,15 +1,13 @@
 package cn.edu.sjtu.se.walknshot.apiclient;
 
-import cn.edu.sjtu.se.walknshot.apimessages.PictureEntry;
-import cn.edu.sjtu.se.walknshot.apimessages.RegisterResponse;
-import cn.edu.sjtu.se.walknshot.apimessages.Token;
-import cn.edu.sjtu.se.walknshot.apimessages.Util;
+import cn.edu.sjtu.se.walknshot.apimessages.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class ClientImpl implements Client {
     private Token token;
@@ -233,6 +231,48 @@ public class ClientImpl implements Client {
                     callback.onFailure(null);
                 else
                     callback.onSuccess(bytes);
+            }
+        });
+    }
+
+    @Override
+    public void uploadPGroup(final Callback callback, List<byte[]> pictures) {
+        if (!isLoggedIn()) {
+            callback.onFailure(null);
+            return;
+        }
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        builder.addFormDataPart("token", getToken().toString());
+
+        for (byte[] pic : pictures)
+            builder.addFormDataPart("file[]", "picture", RequestBody.create(MediaType.parse("application/octet-stream"), pic));
+
+        RequestBody body = builder.build();
+
+        Request request = new Request.Builder()
+                .url(getBaseUrl() + "/pgroup/upload")
+                .post(body)
+                .build();
+
+        new OkHttpClient().newCall(request).enqueue(new CallbackForward(callback) {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onNetworkFailure(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    PGroupDetails r = new ObjectMapper().readValue(response.body().string(), PGroupDetails.class);
+                    if (r != null)
+                        callback.onSuccess(r);
+                    else
+                        callback.onFailure(null);
+                } catch (JsonMappingException e) {
+                    callback.onFailure(null);
+                }
             }
         });
     }
