@@ -35,7 +35,7 @@
             android:layout_below="@id/main_btn_my_location"
             android:layout_marginTop="20dp"
             android:scaleType="center"
-            android:src="@drawable/icon_camera"
+            android:src="@drawable/icon_camera_small"
             android:tint="@color/lostGrey" />
 
 

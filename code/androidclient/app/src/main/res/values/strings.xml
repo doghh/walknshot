@@ -43,14 +43,20 @@
 
     <!-- AddPictures -->
     <string name="title_beautifypictures">Beautify</string>
-    <string name="submitPictures">Submit</string>
-    <string name="shareToWeChat">Share</string>
+    <string name="action_submitPictures">Submit</string>
+    <string name="action_shareToWeChat">Share</string>
     <string name="hint_add_pictures">(hint: pictures can be deleted by clicking)</string>
-    <string name="savePicture">Save</string>
-    <string name="cancelBeautify">Origin</string>
-    <string name="oldRemember">Old Remember</string>
-    <string name="sunShine">Sun Shine</string>
-    <string name="sketch">Sketch</string>
+    <string name="action_savePicture">Save</string>
+    <string name="action_take_photo">Camera</string>
+    <string name="action_open_album">Photo Album</string>
+    <string name="title_cancelBeautify">Origin</string>
+    <string name="title_oldRemember">Old Remember</string>
+    <string name="title_sunShine">Sun Shine</string>
+    <string name="title_sketch">Sketch</string>
+    <string name="error_max_photo">At most 9 pictures</string>
+    <string name="error_upload_fail">Sorry, uploading fails</string>
+    <string name="upload_success">Upload successfully</string>
+    <string name="save_success">Save successfully</string>
 
     <!-- Settings -->
     <string name="action_exit">Exit</string>

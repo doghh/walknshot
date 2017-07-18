@@ -17,7 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".WelcomeActivity">
+        <activity
+            android:name=".WelcomeActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|locale|layoutDirection">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,6 +29,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|locale|layoutDirection"
             android:exported="true" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />

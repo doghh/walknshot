@@ -63,7 +63,7 @@
         <Button
             android:id="@+id/add_pic_btn_submit"
             style="@style/ButtonCommonTheme"
-            android:text="@string/submitPictures"
+            android:text="@string/action_submitPictures"
             android:textAllCaps="true" />
 
         <!--<TextView-->

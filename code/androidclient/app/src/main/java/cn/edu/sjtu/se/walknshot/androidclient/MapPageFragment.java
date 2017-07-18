@@ -5,8 +5,11 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -26,9 +28,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,6 +57,7 @@ public class MapPageFragment extends Fragment {
     private final LatLng mDefaultLocation = new LatLng(39.98871, 116.43234);
     private static final int DEFAULT_ZOOM = 15;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int PHOTO_GRAPH = 1;
     private static final long POLLING_FREQ = 1000 * 30;
     private static final long FASTEST_UPDATE_FREQ = 1000 * 5;
     private static final float ZINDEX_LEVEL_TOP = 4;
@@ -227,9 +234,17 @@ public class MapPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
-                intent.putExtra("latitude", mLastKnownLocation.getLatitude());
-                intent.putExtra("longitude", mLastKnownLocation.getLongitude());
-                startActivity(intent);
+                if (mRecordBegun) {
+                    LatLng currentSpot = mSpots.get(mSpots.size() - 1);
+                    intent.putExtra("latitude", currentSpot.latitude)
+                            .putExtra("longitude", currentSpot.longitude)
+                            .putExtra("source", "mapPage");
+                } else {
+                    intent.putExtra("latitude", mLastKnownLocation.getLatitude())
+                            .putExtra("longitude", mLastKnownLocation.getLongitude())
+                            .putExtra("source", "mapPage");
+                }
+                getActivity().startActivityForResult(intent, PHOTO_GRAPH);
             }
         });
     }
@@ -332,6 +347,10 @@ public class MapPageFragment extends Fragment {
             if (mMyLocationCircle != null) {
                 mMyLocationCircle.setCenter(latLng);
             }
+            // change path if in walking
+            if (mRecordBegun) {
+
+            }
         }
     }
 
@@ -351,9 +370,12 @@ public class MapPageFragment extends Fragment {
             mSpots.add(startPoint);
 
             mPath = mGoogleMap.addPolyline(new PolylineOptions()
-                    .width(25)
-                    .color(Color.CYAN)
-                    .geodesic(true));
+                    .startCap(new RoundCap())
+                    .endCap(new RoundCap())
+                    .jointType(JointType.ROUND)
+                    .color(Color.CYAN).width(25)
+                    .geodesic(true)
+                    .zIndex(ZINDEX_LEVEL_2));
 
             // start draw path
             final MapPageFragment This = this;
@@ -365,9 +387,9 @@ public class MapPageFragment extends Fragment {
             }).start();
 
             // log
-            MyToast.makeText(getActivity().getApplicationContext(), R.string.log_start_record_path, Toast.LENGTH_SHORT).show();
+            MyToast.makeText(getActivity().getApplicationContext(), R.string.log_start_record_path, MyToast.LENGTH_SHORT).show();
         } else {
-            MyToast.makeText(getActivity().getApplicationContext(), R.string.error_location_loss, Toast.LENGTH_SHORT).show();
+            MyToast.makeText(getActivity().getApplicationContext(), R.string.error_location_loss, MyToast.LENGTH_SHORT).show();
         }
     }
 
@@ -375,8 +397,9 @@ public class MapPageFragment extends Fragment {
         mRecordBegun = false;
         // 清除polyline
         mPath.remove();
+        mPath = null;
         // log
-        MyToast.makeText(getActivity().getApplicationContext(), R.string.log_end_record_path, Toast.LENGTH_SHORT).show();
+        MyToast.makeText(getActivity().getApplicationContext(), R.string.log_end_record_path, MyToast.LENGTH_SHORT).show();
     }
 
     public void updatePath(long sec) {
@@ -386,6 +409,8 @@ public class MapPageFragment extends Fragment {
             //        (mSpots.get(mSpots.size() - 1).latitude + 0.1, mSpots.get(mSpots.size() - 1).longitude + 0.1);
             if (!newSpot.equals(mSpots.get(mSpots.size() - 1))) {
                 mSpots.add(newSpot);
+                // send new spot to server
+                // ...
                 // send message to update UI
                 Message msgMessage = new Message();
                 msgMessage.arg1 = 1;
@@ -403,7 +428,7 @@ public class MapPageFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
                 case 1:
-                    if (mSpots.size() > 0) {
+                    if (mSpots.size() > 0 && mPath != null) {
                         mPath.setPoints(mSpots);
                     }
                     break;
@@ -412,4 +437,15 @@ public class MapPageFragment extends Fragment {
             }
         }
     };
+
+    public void addPhoto(byte[] bis, double lat, double lng) {
+//        if (mRecordBegun) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+            Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
+                    .position(new LatLng(lat, lng))
+                    .zIndex(ZINDEX_LEVEL_3));
+//        }
+    }
 }

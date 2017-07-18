@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,11 +22,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,7 +45,8 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
 
     private GridView mGridView;                   //网格显示缩略图
     private Button mBtnSubmitPic;
-    private TextView shareToWeChat;
+    private ImageButton mBtnTakePhoto;
+    private ImageButton mBtnOpenAlbum;
     private Bitmap bmp;                               //导入临时图片
     private ArrayList<HashMap<String, Object>> imageItem;
     private ArrayList<Uri> imageUris;
@@ -63,17 +63,23 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
     private static final int PHOTO_BEAUTIFY = 4;// 美化
     private static final String IMAGE_UNSPECIFIED = "image/*";
     private boolean mPermissionDenied = false;
+    private String mIntentSource;
     private String mStoragePath;
-    private String filename = null;
+    private String mFilename = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addpictures);
-        //锁定屏幕
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_addpictures);
+
+        Intent intent = getIntent();
+        latitude = intent.getExtras().getDouble("latitude");
+        longitude = intent.getExtras().getDouble("longitude");
+        mIntentSource = intent.getExtras().getString("source");
+
+        // 锁定屏幕
+        // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // setContentView(R.layout.activity_addpictures);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -82,113 +88,124 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                     WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
         }
 
+        if ("mapPage".equals(mIntentSource)) {
+            setContentView(R.layout.activity_photograph);
+        } else if ("discovery".equals(mIntentSource)) {
+            setContentView(R.layout.activity_addpictures);
+        }
+
         mStoragePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/walknshot";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
 
-        Intent intent =getIntent();
-        latitude=intent.getExtras().getDouble("latitude");
-        longitude=intent.getExtras().getDouble("longitude");
+        initView();
+    }
 
+    private void initView() {
+        if ("mapPage".equals(mIntentSource)) {
+            mBtnTakePhoto = (ImageButton) findViewById(R.id.btn_take_photo);
+            mBtnOpenAlbum = (ImageButton) findViewById(R.id.btn_open_album);
+            mBtnTakePhoto.setOnClickListener(onClickListener);
+            mBtnOpenAlbum.setOnClickListener(onClickListener);
+        } else if ("discovery".equals(mIntentSource)) {
 
-        //获取控件对象
-        mGridView = (GridView) findViewById(R.id.add_pic_gridview);
+            //获取控件对象
+            mGridView = (GridView) findViewById(R.id.add_pic_gridview);
+            /*
+             * 载入默认图片添加图片加号
+             * 通过适配器实现
+             * SimpleAdapter参数imageItem为数据源 R.layout.gridview_addpic为布局
+             */
+            bmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon_addpic); //加号
+            imageItem = new ArrayList<>();
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("itemImage", bmp);
+            imageItem.add(map);
+            simpleAdapter = new SimpleAdapter(this,
+                    imageItem, R.layout.gridview_addpic,
+                    new String[]{"itemImage"}, new int[]{R.id.imageView1});
 
-        /*
-         * 载入默认图片添加图片加号
-         * 通过适配器实现
-         * SimpleAdapter参数imageItem为数据源 R.layout.gridview_addpic为布局
-         */
-        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon_addpic); //加号
-        imageItem = new ArrayList<>();
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("itemImage", bmp);
-        imageItem.add(map);
-        simpleAdapter = new SimpleAdapter(this,
-                imageItem, R.layout.gridview_addpic,
-                new String[]{"itemImage"}, new int[]{R.id.imageView1});
-
-        imageUris = new ArrayList<>();
-        /*
-         * HashMap载入bmp图片在GridView中不显示,但是如果载入资源ID能显示 如
-         * map.put("itemImage", R.drawable.img);
-         * 解决方法:
-         *              1.自定义继承BaseAdapter实现
-         *              2.ViewBinder()接口实现
-         *  参考 http://blog.csdn.net/admin_/article/details/7257901
-         */
-        simpleAdapter.setViewBinder(new ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Object data,
-                                        String textRepresentation) {
-                // TODO Auto-generated method stub
-                if (view instanceof ImageView && data instanceof Bitmap) {
-                    ImageView i = (ImageView) view;
-                    i.setImageBitmap((Bitmap) data);
-                    return true;
+            imageUris = new ArrayList<>();
+            /*
+             * HashMap载入bmp图片在GridView中不显示,但是如果载入资源ID能显示 如
+             * map.put("itemImage", R.drawable.img);
+             * 解决方法:
+             *              1.自定义继承BaseAdapter实现
+             *              2.ViewBinder()接口实现
+             *  参考 http://blog.csdn.net/admin_/article/details/7257901
+             */
+            simpleAdapter.setViewBinder(new ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Object data,
+                                            String textRepresentation) {
+                    // TODO Auto-generated method stub
+                    if (view instanceof ImageView && data instanceof Bitmap) {
+                        ImageView i = (ImageView) view;
+                        i.setImageBitmap((Bitmap) data);
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
-        mGridView.setAdapter(simpleAdapter);
-
-        /*
-         * 监听GridView点击事件
-         * 报错:该函数必须抽象方法 故需要手动导入import android.view.View;
-         */
-        mGridView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (position == 0 && imageItem.size() == 10) { //第一张为默认图片
-                    Toast.makeText(AddPicturesActivity.this, "照片数最多为9张", Toast.LENGTH_SHORT).show();
-                } else if (position == 0) { //点击图片位置为+ 0对应0张图片
-                    Builder builder = new Builder(AddPicturesActivity.this);
-                    builder.setTitle("选择照片");
-                    //    指定下拉列表的显示数据
-                    final String[] selects = {"拍取照片", "打开相册"};
-                    //    设置一个下拉的列表选择项
-                    builder.setItems(selects, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0: {
-                                    String filePath = mStoragePath;
-                                    File localFile = new File(filePath);
-                                    if (!localFile.exists()) {
-                                        localFile.mkdir();
+            });
+            mGridView.setAdapter(simpleAdapter);
+            /*
+             * 监听GridView点击事件
+             * 报错:该函数必须抽象方法 故需要手动导入import android.view.View;
+             */
+            mGridView.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    if (position == 0 && imageItem.size() == 10) { //第一张为默认图片
+                        MyToast.makeText(getApplicationContext(), R.string.error_max_photo, MyToast.LENGTH_SHORT).show();
+                    } else if (position == 0) { //点击图片位置为+ 0对应0张图片
+                        //    指定下拉列表的显示数据
+                        final String[] selects = {
+                                getString(R.string.action_take_photo),
+                                getString(R.string.action_open_album)
+                        };
+                        //    设置一个下拉的列表选择项
+                        new Builder(AddPicturesActivity.this)
+                                .setItems(selects, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which) {
+                                            case 0: {
+                                                String filePath = mStoragePath;
+                                                File localFile = new File(filePath);
+                                                if (!localFile.exists()) {
+                                                    localFile.mkdir();
+                                                }
+                                                mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
+                                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(mStoragePath
+                                                        , mFilename)));
+                                                startActivityForResult(intent, PHOTO_GRAPH);
+                                                break;
+                                            }
+                                            case 1: {
+                                                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                                                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_UNSPECIFIED);
+                                                startActivityForResult(intent, PHOTO_ZOOM);
+                                                break;
+                                            }
+                                        }
                                     }
-                                    filename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
-                                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(mStoragePath
-                                            , filename)));
-                                    startActivityForResult(intent, PHOTO_GRAPH);
-                                    break;
-                                }
-                                case 1: {
-                                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_UNSPECIFIED);
-                                    startActivityForResult(intent, PHOTO_ZOOM);
-                                    break;
-                                }
-                            }
-                            ;
-                        }
-                    });
-                    builder.show();
-                } else {
-                    dialog(position);
-                    //Toast.makeText(AddPicturesActivity.this, "点击第" + (position + 1) + " 号图片",
-                    //		Toast.LENGTH_SHORT).show();
+                                }).show();
+                    } else {
+                        dialog(position);
+                        //Toast.makeText(AddPicturesActivity.this, "点击第" + (position + 1) + " 号图片",
+                        //		Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
-        //设置Textview监听事件
-        mBtnSubmitPic = (Button) findViewById(R.id.add_pic_btn_submit);
-        mBtnSubmitPic.setOnClickListener(onClickListener);
-//        shareToWeChat = (TextView) findViewById(R.id.shareToWeChat);
-//        shareToWeChat.setOnClickListener(onClickListener);
+            });
+            //设置Textview监听事件
+            mBtnSubmitPic = (Button) findViewById(R.id.add_pic_btn_submit);
+            mBtnSubmitPic.setOnClickListener(onClickListener);
+            //shareToWeChat = (TextView) findViewById(R.id.shareToWeChat);
+            //shareToWeChat.setOnClickListener(onClickListener);
+        }
     }
 
     @Override
@@ -202,7 +219,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         doNext(requestCode, grantResults);
     }
@@ -220,80 +237,64 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
     private final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (v == mBtnSubmitPic) { //提交照片
+            if (v == mBtnOpenAlbum) {
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_UNSPECIFIED);
+                startActivityForResult(intent, PHOTO_ZOOM);
+            } else if (v == mBtnTakePhoto) {
+                String filePath = mStoragePath;
+                File localFile = new File(filePath);
+                if (!localFile.exists()) {
+                    localFile.mkdir();
+                }
+                mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(mStoragePath
+                        , mFilename)));
+                startActivityForResult(intent, PHOTO_GRAPH);
+            } else if (v == mBtnSubmitPic) { //提交照片
                 final Client client = ClientImpl.getInstance();
                 client.addSpot(new Callback() {
                     @Override
                     public void onNetworkFailure(IOException e) {
-                        Toast.makeText(AddPicturesActivity.this,"网络错误，请检查网络设置", Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(Object arg) {
-                        Toast.makeText(AddPicturesActivity.this,"图片上传失败", Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onSuccess(Object arg) {
-                        for (int i = 1 ; i < imageItem.size() ; i++ ){
+                        for (int i = 1; i < imageItem.size(); i++) {
                             Bitmap temp = (Bitmap) imageItem.get(i).get("itemImage");
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             temp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                            byte [] bitmapByte = baos.toByteArray();
-                            final int fi=i;
+                            byte[] bitmapByte = baos.toByteArray();
+                            final int fi = i;
 
                             client.uploadPicture(new Callback() {
                                 @Override
                                 public void onNetworkFailure(IOException e) {
-                                    Toast.makeText(AddPicturesActivity.this,"网络错误，请检查网络设置", Toast.LENGTH_SHORT).show();
+                                    MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
                                 public void onFailure(Object arg) {
-                                    Toast.makeText(AddPicturesActivity.this,"第"+fi+"张图片上传失败", Toast.LENGTH_SHORT).show();
+                                    MyToast.makeText(getApplicationContext(), "第" + fi + "张图片上传失败", MyToast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
                                 public void onSuccess(Object arg) {
-                                    Toast.makeText(AddPicturesActivity.this,"图片上传成功", Toast.LENGTH_SHORT).show();
+                                    MyToast.makeText(getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
                                 }
                             }, bitmapByte);
                         }
-                        Toast.makeText(AddPicturesActivity.this,"图片上传成功", Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
                     }
                 }, latitude, longitude);
 
-            } else if (v == shareToWeChat) { //微信分享
-                Builder builder = new Builder(AddPicturesActivity.this);
-                builder.setTitle("分享");
-                //    指定下拉列表的显示数据
-                final String[] selects = {"微信朋友圈", "微信好友"};
-                //    设置一个下拉的列表选择项
-                builder.setItems(selects, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0: { //分享到微信朋友圈
-                                /*
-                                Intent intent = new Intent("android.intent.action.VIEW");
-                                ComponentName comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
-                                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.setComponent(comp);
-                                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                                intent.setType("image/*");
-                                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                                intent.putExtra("Kdescription", "wwwwwwwwwwwwwwwwwwww");
-                                startActivity(intent);*/
-                                break;
-                            }
-                            case 1: { //分享给微信好友
-                                break;
-                            }
-                        }
-                    }
-                });
-                builder.show();
             }
         }
     };
@@ -310,11 +311,11 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             if (!localFile.exists()) {
                 boolean b = localFile.mkdir();
                 if (!b) {
-                    Toast.makeText(AddPicturesActivity.this, "创建文件夹失败", Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
                 }
             }
             File picture = new File(mStoragePath
-                    + "/" + filename);
+                    + "/" + mFilename);
             try {
                 MediaStore.Images.Media.insertImage(getContentResolver(), picture.getAbsolutePath(), "title", "description");
             } catch (FileNotFoundException e) {
@@ -355,11 +356,11 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             if (!localFile.exists()) {
                 boolean b = localFile.mkdir();
                 if (!b) {
-                    Toast.makeText(AddPicturesActivity.this, "创建文件夹失败", Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
                 }
             }
-            filename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
-            File picture = new File(mStoragePath + "/" + filename);
+            mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
+            File picture = new File(mStoragePath + "/" + mFilename);
             try {
                 FileOutputStream out = new FileOutputStream(picture);
                 out.write(stream.toByteArray());
@@ -376,34 +377,41 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 e.printStackTrace();
             }
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
-            imageUris.add(Uri.fromFile(picture));
+            MyToast.makeText(getApplicationContext(), R.string.save_success, MyToast.LENGTH_SHORT).show();
 
-
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("itemImage", addbmp);
-            imageItem.add(map);
-            simpleAdapter = new SimpleAdapter(this,
-                    imageItem, R.layout.gridview_addpic,
-                    new String[]{"itemImage"}, new int[]{R.id.imageView1});
-            simpleAdapter.setViewBinder(new ViewBinder() {
-                @Override
-                public boolean setViewValue(View view, Object data,
-                                            String textRepresentation) {
-                    // TODO Auto-generated method stub
-                    if (view instanceof ImageView && data instanceof Bitmap) {
-                        ImageView i = (ImageView) view;
-                        i.setImageBitmap((Bitmap) data);
-                        return true;
+            if ("mapPage".equals(mIntentSource)) {
+                Intent intent = new Intent();
+                intent.putExtra("returnbitmap", bis)
+                        .putExtra("latitude", latitude)
+                        .putExtra("longitude", longitude);
+                setResult(RESULT_OK, intent);
+                finish();
+            } else if ("discovery".equals(mIntentSource)) {
+                imageUris.add(Uri.fromFile(picture));
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("itemImage", addbmp);
+                imageItem.add(map);
+                simpleAdapter = new SimpleAdapter(this,
+                        imageItem, R.layout.gridview_addpic,
+                        new String[]{"itemImage"}, new int[]{R.id.imageView1});
+                simpleAdapter.setViewBinder(new ViewBinder() {
+                    @Override
+                    public boolean setViewValue(View view, Object data,
+                                                String textRepresentation) {
+                        // TODO Auto-generated method stub
+                        if (view instanceof ImageView && data instanceof Bitmap) {
+                            ImageView i = (ImageView) view;
+                            i.setImageBitmap((Bitmap) data);
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            });
-            mGridView.setAdapter(simpleAdapter);
-            simpleAdapter.notifyDataSetChanged();
-            //刷新后释放防止手机休眠后自动添加
-
+                });
+                mGridView.setAdapter(simpleAdapter);
+                simpleAdapter.notifyDataSetChanged();
+                //刷新后释放防止手机休眠后自动添加
+            }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**

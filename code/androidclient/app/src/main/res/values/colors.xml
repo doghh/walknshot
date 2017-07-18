@@ -7,9 +7,10 @@
     <color name="colorPrimaryBlack">#00838F</color>
     <color name="colorAccent">#F06292</color>
     <color name="lostGrey">#9E9E9E</color>
-    <color name="tealLight">#4DB6AC</color>
-    <color name="tealDark">#00695C</color>
     <color name="pinkLight">#FCE4EC</color>
     <color name="pinkPrimary">#F06292</color>
     <color name="pinkDark">#C2185B</color>
+    <color name="amberLight">#FFECB3</color>
+    <color name="amberPrimary">#FFCA28</color>
+    <color name="amberDark">#FFA000</color>
 </resources>

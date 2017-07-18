@@ -43,14 +43,20 @@
 
     <!-- AddPictures -->
     <string name="title_beautifypictures">美化照片</string>
-    <string name="submitPictures">提交</string>
-    <string name="shareToWeChat">分享到微信</string>
+    <string name="action_submitPictures">提交</string>
+    <string name="action_shareToWeChat">分享到微信</string>
     <string name="hint_add_pictures">（友情提示:点击图片可以删除已添加图片）</string>
-    <string name="savePicture">保存</string>
-    <string name="cancelBeautify">原图</string>
-    <string name="oldRemember">怀旧</string>
-    <string name="sunShine">光照</string>
-    <string name="sketch">素描</string>
+    <string name="action_savePicture">保存</string>
+    <string name="action_take_photo">相机</string>
+    <string name="action_open_album">打开相册</string>
+    <string name="title_cancelBeautify">原图</string>
+    <string name="title_oldRemember">怀旧</string>
+    <string name="title_sunShine">光照</string>
+    <string name="title_sketch">素描</string>
+    <string name="error_max_photo">最多上传9张照片</string>
+    <string name="error_upload_fail">上传失败</string>
+    <string name="upload_success">上传成功</string>
+    <string name="save_success">图片已保存</string>
 
     <!-- Settings -->
     <string name="action_exit">退出登录</string>

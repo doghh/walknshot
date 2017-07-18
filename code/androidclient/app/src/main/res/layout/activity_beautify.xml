@@ -74,7 +74,7 @@
                 android:gravity="center"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
-                android:text="@string/cancelBeautify"
+                android:text="@string/title_cancelBeautify"
                 android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium" />
 
@@ -86,7 +86,7 @@
                 android:gravity="center"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
-                android:text="@string/oldRemember"
+                android:text="@string/title_oldRemember"
                 android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium" />
 
@@ -98,7 +98,7 @@
                 android:gravity="center"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
-                android:text="@string/sunShine"
+                android:text="@string/title_sunShine"
                 android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium" />
 
@@ -110,7 +110,7 @@
                 android:gravity="center"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:paddingStart="@dimen/activity_horizontal_margin"
-                android:text="@string/sketch"
+                android:text="@string/title_sketch"
                 android:textAllCaps="true"
                 android:textAppearance="?android:textAppearanceMedium" />
 

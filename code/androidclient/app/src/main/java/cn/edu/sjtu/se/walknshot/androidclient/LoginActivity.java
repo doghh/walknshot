@@ -13,7 +13,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.regex.Pattern;
 
@@ -64,15 +63,15 @@ public class LoginActivity extends Activity implements OnClickListener {
 
                 // blank username or password
                 if ("".equals(name) || "".equals(psw)) {
-                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_blank, Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_blank, MyToast.LENGTH_SHORT).show();
                 }
                 // invalid username
                 else if (!Pattern.matches("([a-z][a-z0-9_]{3,30})", name)) {
-                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_username, Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_username, MyToast.LENGTH_SHORT).show();
                 }
                 // invalid password
                 else if (psw.length() < 6) {
-                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_password, Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(getApplicationContext(), R.string.error_invalid_password, MyToast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(this, LoginLoadingActivity.class);
                     intent.putExtra("USERNAME", name);
@@ -90,7 +89,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             }
 
             case R.id.login_btn_forget_pw: {
-                MyToast.makeText(getApplicationContext(), "呵呵，密码都能忘，可以说非常豹笑了", Toast.LENGTH_SHORT).show();
+                MyToast.makeText(getApplicationContext(), "呵呵，密码都能忘，可以说非常豹笑了", MyToast.LENGTH_SHORT).show();
                 break;
             }
         }
@@ -103,14 +102,14 @@ public class LoginActivity extends Activity implements OnClickListener {
                 if (resultCode == RESULT_OK) {
                     String loginStatus = data.getStringExtra("LOGIN_STATUS");
                     if ("FAIL_NETWORK".equals(loginStatus)) {
-                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
                     } else if ("FAIL".equals(loginStatus)) {
-                        MyToast.makeText(getApplicationContext(), R.string.error_login_fail, Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.error_login_fail, MyToast.LENGTH_SHORT).show();
                     } else if ("SUCCESS".equals(loginStatus)) {
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                        MyToast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getApplicationContext(), R.string.login_success, MyToast.LENGTH_SHORT).show();
                     }
                 }
                 break;

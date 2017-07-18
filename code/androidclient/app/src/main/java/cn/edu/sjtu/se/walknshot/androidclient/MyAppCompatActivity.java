@@ -19,12 +19,20 @@ public class MyAppCompatActivity extends AppCompatActivity {
 
     protected void initToolbar(int id) {
         mToolbar = (Toolbar) findViewById(id);
-        mToolbar.setNavigationIcon(R.drawable.icon_back);
-        setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
+        if (mToolbar != null) {
+            mToolbar.setNavigationIcon(R.drawable.icon_back);
+            setSupportActionBar(mToolbar);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowTitleEnabled(false);
+            }
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
         }
     }
 
@@ -32,12 +40,6 @@ public class MyAppCompatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         initToolbar(R.id.toolbar);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
 }

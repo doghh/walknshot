@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements
         LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final int PHOTO_GRAPH = 1;
 
     private MapPageFragment mapPageFragment;
     private DiscoveryFragment discoveryFragment;
@@ -219,6 +220,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PHOTO_GRAPH:
+                if (resultCode == RESULT_OK) {
+                    byte[] bis = data.getByteArrayExtra("returnbitmap");
+                    double lat = data.getExtras().getDouble("latitude");
+                    double lng = data.getExtras().getDouble("longitude");
+                    mapPageFragment.addPhoto(bis, lat, lng);
+                }
+                break;
+            default:
+        }
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
