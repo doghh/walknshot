@@ -80,8 +80,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/icon_user"
                     android:tint="@color/colorPrimaryDark" />
 
@@ -112,8 +112,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/icon_psw"
                     android:tint="@color/colorPrimaryDark" />
 

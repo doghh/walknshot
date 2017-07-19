@@ -45,6 +45,45 @@ public class TransformUtils {
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    public static ArrayList<Item> postToItems(List<Post> list) {
+        ArrayList<Item> items = new ArrayList<Item>();
+        for (Post post : list) {
+            items.add(createTitle(post));
+            items.add(createBody(post));
+            items.add(createImage(post));
+            items.add(createBottom(post));
+        }
+        return items;
+    }
+
+    private static Item createTitle(Post post) {
+        Item item = new Item();
+        item.setStyleType(Item.TITLE);
+        item.setText(post.getTitle());
+        return item;
+    }
+
+    private static Item createImage(Post post) {
+        Item item = new Item();
+        item.setStyleType(Item.IMAGE);
+        item.setCover(post.getCover());
+        return item;
+    }
+
+    private static Item createBody(Post post) {
+        Item item = new Item();
+        item.setStyleType(Item.BODY);
+        item.setText(post.getBody());
+        return item;
+    }
+
+    private static Item createBottom(Post post) {
+        Item item = new Item();
+        item.setStyleType(Item.BOTTOM);
+        return item;
+    }
+
+
     public static String latlngToCity(Context context, LatLng latLng) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
