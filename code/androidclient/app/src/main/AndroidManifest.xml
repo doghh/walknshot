@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|locale|layoutDirection">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,19 +28,19 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|locale|layoutDirection"
             android:exported="true" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".SettingActivity" />
-        <activity android:name=".AddPicturesActivity" />
-        <activity android:name=".BeautifyPictureActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.AddPicturesActivity" />
+        <activity android:name=".activity.BeautifyPictureActivity" />
         <activity
-            android:name=".LoginLoadingActivity"
+            android:name=".activity.LoginLoadingActivity"
             android:theme="@style/WindowDialog" />
         <activity
-            android:name=".RegisterLoadingActivity"
+            android:name=".activity.RegisterLoadingActivity"
             android:theme="@style/WindowDialog" />
 
         <!-- google map API KEY -->

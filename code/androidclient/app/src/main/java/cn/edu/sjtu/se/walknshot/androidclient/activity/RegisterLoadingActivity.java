@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import java.io.IOException;
 
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.apiclient.*;
 
 public class RegisterLoadingActivity extends Activity {

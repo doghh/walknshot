@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -6,17 +6,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 
+import cn.edu.sjtu.se.walknshot.androidclient.R;
+
 /**
  * Created by zhangqiaoyu on 2017/7/12.
  */
 
-public class BeautifyPictureActivity extends MyAppCompatActivity{
+public class BeautifyPictureActivity extends MyAppCompatActivity {
 
     private TextView oldRemember;
     private TextView sunShine;

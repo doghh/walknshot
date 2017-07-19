@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.Manifest;
 import android.app.AlertDialog.Builder;
@@ -26,7 +26,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.SimpleAdapter.ViewBinder;
-import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,6 +37,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+import cn.edu.sjtu.se.walknshot.androidclient.util.PermissionUtils;
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.apiclient.*;
 
 public class AddPicturesActivity extends MyAppCompatActivity implements
@@ -124,7 +126,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             map.put("itemImage", bmp);
             imageItem.add(map);
             simpleAdapter = new SimpleAdapter(this,
-                    imageItem, R.layout.gridview_addpic,
+                    imageItem, R.layout.my_view_addpic,
                     new String[]{"itemImage"}, new int[]{R.id.imageView1});
 
             imageUris = new ArrayList<>();
@@ -392,7 +394,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 map.put("itemImage", addbmp);
                 imageItem.add(map);
                 simpleAdapter = new SimpleAdapter(this,
-                        imageItem, R.layout.gridview_addpic,
+                        imageItem, R.layout.my_view_addpic,
                         new String[]{"itemImage"}, new int[]{R.id.imageView1});
                 simpleAdapter.setViewBinder(new ViewBinder() {
                     @Override

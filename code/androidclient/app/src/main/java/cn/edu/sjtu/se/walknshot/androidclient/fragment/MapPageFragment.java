@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.fragment;
 
 import android.Manifest;
 import android.app.Fragment;
@@ -28,12 +28,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -44,6 +42,13 @@ import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.AddPicturesActivity;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.MainActivity;
+import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+import cn.edu.sjtu.se.walknshot.androidclient.util.PermissionUtils;
+import cn.edu.sjtu.se.walknshot.androidclient.util.TransformUtils;
 
 public class MapPageFragment extends Fragment {
 

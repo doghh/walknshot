@@ -1,6 +1,5 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.fragment;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.SettingActivity;
 
 public class PersonalCenterFragment extends Fragment {
 

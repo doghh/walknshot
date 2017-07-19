@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.Manifest;
 import android.app.FragmentTransaction;
@@ -21,6 +21,11 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+
+import cn.edu.sjtu.se.walknshot.androidclient.fragment.DiscoveryFragment;
+import cn.edu.sjtu.se.walknshot.androidclient.fragment.MapPageFragment;
+import cn.edu.sjtu.se.walknshot.androidclient.fragment.PersonalCenterFragment;
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 public class MainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
@@ -239,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addCategory(Intent.CATEGORY_HOME);

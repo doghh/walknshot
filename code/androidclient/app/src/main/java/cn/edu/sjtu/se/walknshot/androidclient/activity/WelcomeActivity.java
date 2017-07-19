@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.widget.FrameLayout;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 public class WelcomeActivity extends Activity {
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.edu.sjtu.se.walknshot.androidclient.MainActivity">
+    tools:context="cn.edu.sjtu.se.walknshot.androidclient.activity.MainActivity">
 
     <FrameLayout
         android:id="@+id/main_content"

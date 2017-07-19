@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.util;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 /**
  * Utility class for access to runtime permissions.

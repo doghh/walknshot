@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.util;
 
 
 import android.content.res.Resources;
@@ -14,6 +14,8 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 public class TransformUtils {
 

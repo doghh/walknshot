@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.regex.Pattern;
+
+import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 public class RegisterActivity extends MyAppCompatActivity implements OnClickListener {
 

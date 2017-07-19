@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.regex.Pattern;
+
+import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 
 public class LoginActivity extends Activity implements OnClickListener {

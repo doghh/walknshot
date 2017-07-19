@@ -1,4 +1,4 @@
-package cn.edu.sjtu.se.walknshot.androidclient;
+package cn.edu.sjtu.se.walknshot.androidclient.util;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 
 public class MyToast {
