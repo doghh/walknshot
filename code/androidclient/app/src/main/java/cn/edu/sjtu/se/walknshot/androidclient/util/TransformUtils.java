@@ -1,10 +1,12 @@
 package cn.edu.sjtu.se.walknshot.androidclient.util;
 
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -15,7 +17,13 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.model.Item;
+import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
 
 public class TransformUtils {
 
@@ -35,6 +43,19 @@ public class TransformUtils {
         DrawableCompat.setTint(vectorDrawable, color);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    public static String latlngToCity(Context context, LatLng latLng) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<android.location.Address> address = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            String country = address.get(0).getCountryName();
+            String city = address.get(0).getLocality();
+            return country + ", " + city;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static LatLng transformFromWGSToGCJ(double wgLat, double wgLng) {

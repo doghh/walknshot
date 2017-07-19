@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.AddPicturesActivity;
@@ -63,8 +64,9 @@ public class MapPageFragment extends Fragment {
     private static final int DEFAULT_ZOOM = 15;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final int PHOTO_GRAPH = 1;
-    private static final long POLLING_FREQ = 1000 * 30;
+    private static final long POLLING_FREQ = 1000 * 5;
     private static final long FASTEST_UPDATE_FREQ = 1000 * 5;
+    private static final long SMALLEST_DISPLACEMENT = 5;
     private static final float ZINDEX_LEVEL_TOP = 4;
     private static final float ZINDEX_LEVEL_3 = 3;
     private static final float ZINDEX_LEVEL_2 = 2;
@@ -86,6 +88,7 @@ public class MapPageFragment extends Fragment {
     // The path
     public boolean mRecordBegun = false;
     private List<LatLng> mSpots = new ArrayList<>();
+    private Marker mStartMarker;
     private Polyline mPath;
 
     private ImageButton mBtnMyLocation, mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
@@ -265,33 +268,25 @@ public class MapPageFragment extends Fragment {
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+        if (mMyLocationMarker == null) {
+            LocationRequest mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setSmallestDisplacement(SMALLEST_DISPLACEMENT)
+                    .setInterval(POLLING_FREQ)
+                    .setFastestInterval(FASTEST_UPDATE_FREQ);
+            LocationServices.FusedLocationApi.requestLocationUpdates
+                    (((MainActivity) getActivity()).getGoogleApiClient(), mLocationRequest, (MainActivity) getActivity());
+        }
 
         // 谷歌自带的蓝标
         // mGoogleMap.setMyLocationEnabled(true);
 
         if (mMyLocationMarker == null) {
-            mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
-                    .icon(TransformUtils.vectorToBitmap(getResources(), R.drawable.icon_dot, Color.parseColor("#2979FF")))
-                    .anchor(0.5f, 0.5f)
-                    .zIndex(ZINDEX_LEVEL_TOP)
-                    .flat(true));
+            addBlueDot(mDefaultLocation);
         }
 
-        if (mMyLocationCircle == null) {
-            mMyLocationCircle = mGoogleMap.addCircle(new CircleOptions()
-                    .center(new LatLng(mDefaultLocation.latitude, mDefaultLocation.longitude))
-                    .radius(20)
-                    .fillColor(Color.parseColor("#3C2979FF"))
-                    .strokeColor(Color.parseColor("#B42979FF"))
-                    .strokeWidth(3f)
-                    .zIndex(ZINDEX_LEVEL_3));
-        }
-
-        mLastKnownLocation = LocationServices.FusedLocationApi
-                .getLastLocation(((MainActivity) getActivity()).getGoogleApiClient());
-        correctLocation();
-
+        setLastKnownLocation(LocationServices.FusedLocationApi
+                .getLastLocation(((MainActivity) getActivity()).getGoogleApiClient()));
 
         // Set the map's camera position to the current location of the device.
         if (mCameraPosition != null) {
@@ -374,6 +369,11 @@ public class MapPageFragment extends Fragment {
             mSpots.clear();
             mSpots.add(startPoint);
 
+            // start marker
+            mStartMarker = mGoogleMap.addMarker(new MarkerOptions()
+                    .position(startPoint)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+
             mPath = mGoogleMap.addPolyline(new PolylineOptions()
                     .startCap(new RoundCap())
                     .endCap(new RoundCap())
@@ -401,8 +401,10 @@ public class MapPageFragment extends Fragment {
     public void endRecordPath() {
         mRecordBegun = false;
         // 清除polyline
-        mPath.remove();
         mPath = null;
+        mStartMarker = null;
+        mGoogleMap.clear();
+        addBlueDot(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
         // log
         MyToast.makeText(getActivity().getApplicationContext(), R.string.log_end_record_path, MyToast.LENGTH_SHORT).show();
     }
@@ -453,4 +455,21 @@ public class MapPageFragment extends Fragment {
                     .zIndex(ZINDEX_LEVEL_3));
 //        }
     }
+
+    private void addBlueDot(LatLng latLng) {
+        mMyLocationMarker = mGoogleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(TransformUtils.vectorToBitmap(getResources(), R.drawable.icon_dot, Color.parseColor("#2979FF")))
+                .anchor(0.5f, 0.5f)
+                .zIndex(ZINDEX_LEVEL_TOP)
+                .flat(true));
+        mMyLocationCircle = mGoogleMap.addCircle(new CircleOptions()
+                .center(latLng)
+                .radius(20)
+                .fillColor(Color.parseColor("#3C2979FF"))
+                .strokeColor(Color.parseColor("#B42979FF"))
+                .strokeWidth(3f)
+                .zIndex(ZINDEX_LEVEL_3));
+    }
+
 }

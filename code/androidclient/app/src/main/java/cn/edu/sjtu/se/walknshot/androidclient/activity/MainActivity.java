@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements
         LocationListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final int PHOTO_GRAPH = 1;
 
     private MapPageFragment mapPageFragment;
     private DiscoveryFragment discoveryFragment;
@@ -44,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private LinearLayout mMapPage, mDiscovery, mPersonalCenter;
 
+    private static final int PHOTO_GRAPH = 1;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
@@ -211,12 +210,6 @@ public class MainActivity extends AppCompatActivity implements
                 // Permission Granted
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-                    LocationRequest mLocationRequest = LocationRequest.create()
-    //                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-    //                .setInterval(POLLING_FREQ)
-    //                .setFastestInterval(FASTEST_UPDATE_FREQ)
-                            ;
-                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
                     mapPageFragment.initGoogleMap();
                 }
             } else {
