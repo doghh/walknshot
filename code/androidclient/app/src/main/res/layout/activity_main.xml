@@ -25,34 +25,6 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/tab_map_page"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:src="@drawable/icon_map"
-                android:tint="@drawable/selector_main_tab_color" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/title_map"
-                android:textColor="@drawable/selector_main_tab_color"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
             android:id="@+id/tab_dicovery"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -79,6 +51,32 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/tab_map_page"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:src="@drawable/icon_map"
+                android:tint="@drawable/selector_main_tab_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/title_map"
+                android:textColor="@drawable/selector_main_tab_color"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/tab_personal_center"

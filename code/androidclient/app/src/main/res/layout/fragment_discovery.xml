@@ -11,6 +11,8 @@
         android:id="@+id/list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white" />
+        android:background="@color/white"
+        android:drawSelectorOnTop="true"
+        android:listSelector="@drawable/selector_white_item_color" />
 
 </LinearLayout>

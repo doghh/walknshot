@@ -45,7 +45,8 @@ public class DiscoveryFragment extends Fragment implements
         mPosts.add(new Post(3, "title3", "This is News 3.", bitmap));
         mPosts.add(new Post(4, "title4", "This is News 4.", bitmap));
         PostAdapter adapter = new PostAdapter(getActivity(), this);
-        adapter.addAll(TransformUtils.postToItems(mPosts));
+        adapter.addAll(mPosts);
+        mListView.addHeaderView(inflater.inflate(R.layout.item_head, null, false));
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
 
@@ -77,10 +78,11 @@ public class DiscoveryFragment extends Fragment implements
             }
             case COMMENT: {
                 // open comment page
+                // v.getTag() 得到的是不包括Header的内部position
                 // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
                 break;
             }
-            case MORE:{
+            case MORE: {
                 // open view photo page
                 // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
                 break;
