@@ -98,7 +98,6 @@ public class MapPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map_page,
                 container, false);
-
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -165,6 +164,7 @@ public class MapPageFragment extends Fragment {
     public void onStart() {
         super.onStart();
         mMap.onStart();
+        ((MainActivity) getActivity()).buildGoogleApiClient();
     }
 
     @Override

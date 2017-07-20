@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements
     private DiscoveryFragment discoveryFragment;
     private PersonalCenterFragment personalCenterFragment;
 
-    private int currentId = R.id.tab_map_page;
+    private int currentId = R.id.tab_dicovery;
 
     private LinearLayout mMapPage, mDiscovery, mPersonalCenter;
 
@@ -58,26 +58,14 @@ public class MainActivity extends AppCompatActivity implements
         mPersonalCenter = (LinearLayout) findViewById(R.id.tab_personal_center);
 
         //默认首页为MapPage
-        mMapPage.setSelected(true);
-        mapPageFragment = new MapPageFragment();
-        getFragmentManager().beginTransaction().add(R.id.main_content, mapPageFragment).commit();
+        mDiscovery.setSelected(true);
+        discoveryFragment = new DiscoveryFragment();
+        getFragmentManager().beginTransaction().add(R.id.main_content, discoveryFragment).commit();
 
         //为3个tab设置监听
         mMapPage.setOnClickListener(tabClickListener);
         mDiscovery.setOnClickListener(tabClickListener);
         mPersonalCenter.setOnClickListener(tabClickListener);
-
-        // Build the Play services client for use by the Fused Location Provider and the Places API.
-        // Use the addApi() method to request the Google Places API and the Fused Location Provider.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */,
-                        this /* OnConnectionFailedListener */)
-                .addConnectionCallbacks(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .build();
-        mGoogleApiClient.connect();
     }
 
     private View.OnClickListener tabClickListener = new View.OnClickListener() {
@@ -249,5 +237,21 @@ public class MainActivity extends AppCompatActivity implements
 
     public GoogleApiClient getGoogleApiClient() {
         return mGoogleApiClient;
+    }
+
+    public void buildGoogleApiClient() {
+        // Build the Play services client for use by the Fused Location Provider and the Places API.
+        // Use the addApi() method to request the Google Places API and the Fused Location Provider.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this /* FragmentActivity */,
+                            this /* OnConnectionFailedListener */)
+                    .addConnectionCallbacks(this)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .build();
+            mGoogleApiClient.connect();
+        }
     }
 }

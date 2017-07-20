@@ -1,6 +1,7 @@
 package cn.edu.sjtu.se.walknshot.androidclient.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.ViewPicActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
 import cn.edu.sjtu.se.walknshot.androidclient.util.PostAdapter;
@@ -58,8 +60,8 @@ public class DiscoveryFragment extends Fragment implements
      */
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-        MyToast.makeText(getActivity().getApplicationContext(), "listview的item被点击了！，点击的位置是-->" + position,
-                MyToast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ViewPicActivity.class);
+        startActivity(intent);
     }
 
     /**
