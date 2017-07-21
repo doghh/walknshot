@@ -18,9 +18,10 @@ import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
 
 public class PostAdapter extends BaseAdapter {
 
-    private static final int LIKE = 0;
-    private static final int COMMENT = 1;
-    private static final int MORE = 2;
+    public static final int LIKE = 0;
+    public static final int COMMENT = 1;
+    public static final int MORE = 2;
+    public static final int IMGS = 3;
 
     private ArrayList<Post> list;
     private LayoutInflater mInflater;
@@ -75,6 +76,12 @@ public class PostAdapter extends BaseAdapter {
         viewHolder.mTitle.setText(item.getTitle());
         viewHolder.mBody.setText(item.getBody());
         viewHolder.mImage.setImageBitmap(item.getCover());
+        viewHolder.mImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCallback.click(view, IMGS);
+            }
+        });
         viewHolder.mBtnLike.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,6 +100,7 @@ public class PostAdapter extends BaseAdapter {
                 mCallback.click(view, MORE);
             }
         });
+        viewHolder.mImage.setTag(position);
         viewHolder.mBtnLike.setTag(position);
         viewHolder.mBtnComment.setTag(position);
         viewHolder.mBtnMore.setTag(position);

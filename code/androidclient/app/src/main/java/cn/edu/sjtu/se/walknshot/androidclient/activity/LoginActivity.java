@@ -1,5 +1,6 @@
 package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -120,6 +121,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         }
     }
 
+    @TargetApi(21)
     private void setStatusBarUpperAPI21() {
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -133,6 +135,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         }
     }
 
+    @TargetApi(19)
     private void setStatusBarUpperAPI19() {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

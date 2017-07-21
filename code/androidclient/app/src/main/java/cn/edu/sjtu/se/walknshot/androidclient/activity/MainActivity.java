@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements
     private DiscoveryFragment discoveryFragment;
     private PersonalCenterFragment personalCenterFragment;
 
-    private int currentId = R.id.tab_dicovery;
+    private int currentId;
 
     private LinearLayout mMapPage, mDiscovery, mPersonalCenter;
 
@@ -58,9 +58,10 @@ public class MainActivity extends AppCompatActivity implements
         mPersonalCenter = (LinearLayout) findViewById(R.id.tab_personal_center);
 
         //默认首页为MapPage
-        mDiscovery.setSelected(true);
-        discoveryFragment = new DiscoveryFragment();
-        getFragmentManager().beginTransaction().add(R.id.main_content, discoveryFragment).commit();
+        currentId = R.id.tab_map_page;
+        mMapPage.setSelected(true);
+        mapPageFragment = new MapPageFragment();
+        getFragmentManager().beginTransaction().add(R.id.main_content, mapPageFragment).commit();
 
         //为3个tab设置监听
         mMapPage.setOnClickListener(tabClickListener);

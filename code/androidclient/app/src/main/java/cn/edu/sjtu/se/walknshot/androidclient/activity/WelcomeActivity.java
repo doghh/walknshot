@@ -14,6 +14,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.apiclient.*;
+import cn.edu.sjtu.se.walknshot.apimessages.*;
 
 public class WelcomeActivity extends Activity {
 
@@ -43,9 +45,11 @@ public class WelcomeActivity extends Activity {
             @Override
             public void run() {
                 SharedPreferences sharedPreferences = getSharedPreferences("info", MODE_PRIVATE);
-                String isLogin = sharedPreferences.getString("login", "no");
-                if ("yes".equals(isLogin)) {
+                String token = sharedPreferences.getString("token", "");
+                if (!"".equals(token)) {
                     Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                    ClientImpl client = ClientImpl.getInstance();
+                    client.setToken(Token.fromString(token));
                     startActivity(intent);
                     finish();
                 } else {

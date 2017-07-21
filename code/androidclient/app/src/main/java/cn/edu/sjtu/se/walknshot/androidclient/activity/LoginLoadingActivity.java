@@ -21,7 +21,7 @@ public class LoginLoadingActivity extends Activity {
         hint.setText(R.string.loading_login);
         final String username = getIntent().getStringExtra("USERNAME");
         final String password = getIntent().getStringExtra("PASSWORD");
-        Client client = ClientImpl.getInstance();
+        final ClientImpl client = ClientImpl.getInstance();
         client.login(new Callback() {
             @Override
             public void onNetworkFailure(IOException e) {
@@ -47,7 +47,8 @@ public class LoginLoadingActivity extends Activity {
                 SharedPreferences.Editor mEditor = sharedPreferences.edit();
                 mEditor.putString("username", username);
                 mEditor.putString("password", password);
-                mEditor.putString("login", "yes");
+                String token = client.getToken().toString();
+                mEditor.putString("token", token);
                 mEditor.apply();
 
                 Intent intent = new Intent();

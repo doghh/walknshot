@@ -34,7 +34,7 @@ public class SettingActivity extends MyAppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences sharedPreferences = getSharedPreferences("info", MODE_PRIVATE);
                         SharedPreferences.Editor mEditor = sharedPreferences.edit();
-                        mEditor.putString("login", "no");
+                        mEditor.putString("token", "");
                         mEditor.apply();
 
                         Intent intent = new Intent(This, LoginActivity.class);

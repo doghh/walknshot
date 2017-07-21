@@ -22,12 +22,9 @@ import cn.edu.sjtu.se.walknshot.androidclient.util.PostAdapter;
 import cn.edu.sjtu.se.walknshot.androidclient.util.TransformUtils;
 
 public class DiscoveryFragment extends Fragment implements
-        AdapterView.OnItemClickListener,
+  //      AdapterView.OnItemClickListener,
+  //      AdapterView.OnItemLongClickListener,
         PostAdapter.Callback {
-
-    private static final int LIKE = 0;
-    private static final int COMMENT = 1;
-    private static final int MORE = 2;
 
     private ListView mListView;
     ArrayList<Post> mPosts = new ArrayList<>();
@@ -49,20 +46,25 @@ public class DiscoveryFragment extends Fragment implements
         PostAdapter adapter = new PostAdapter(getActivity(), this);
         adapter.addAll(mPosts);
         mListView.addHeaderView(inflater.inflate(R.layout.item_head, null, false));
+   //     mListView.setEmptyView();
         mListView.setAdapter(adapter);
-        mListView.setOnItemClickListener(this);
+  //      mListView.setOnItemClickListener(this);
+   ///     mListView.setOnItemLongClickListener(this);
 
         return rootView;
     }
 
-    /**
-     * 响应ListView中item的点击事件
-     */
-    @Override
-    public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-        Intent intent = new Intent(getActivity(), ViewPicActivity.class);
-        startActivity(intent);
-    }
+//    /**
+//     * 响应ListView中item的点击事件
+//     */
+//    @Override
+//    public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+//    }
+//
+//    @Override
+//    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
+//        return true;
+//    }
 
     /**
      * 接口方法，响应ListView按钮点击事件
@@ -70,7 +72,7 @@ public class DiscoveryFragment extends Fragment implements
     @Override
     public void click(View v, int type) {
         switch (type) {
-            case LIKE: {
+            case PostAdapter.LIKE: {
                 MyToast.makeText(
                         getActivity().getApplicationContext(),
                         "listview的内部的按钮被点击了！，位置是-->" + (Integer) v.getTag() + ",内容是-->"
@@ -78,19 +80,23 @@ public class DiscoveryFragment extends Fragment implements
                         MyToast.LENGTH_SHORT).show();
                 break;
             }
-            case COMMENT: {
+            case PostAdapter.COMMENT: {
                 // open comment page
                 // v.getTag() 得到的是不包括Header的内部position
                 // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
                 break;
             }
-            case MORE: {
-                // open view photo page
+            case PostAdapter.MORE: {
                 // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
                 break;
             }
-            default:
+            case PostAdapter.IMGS: {
+                // open view photo page
+                // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
+                Intent intent = new Intent(getActivity(), ViewPicActivity.class);
+                startActivity(intent);
                 break;
+            }
         }
     }
 }
