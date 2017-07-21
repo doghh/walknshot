@@ -1,0 +1,11 @@
+<hibernate-mapping>
+    <class name="cn.edu.sjtu.se.walknshot.apiserver.entities.PGroup" table="pgroup">
+        <id name="id" type="int" column="id">
+            <generator class="native"/>
+        </id>
+        <set name="pictures">
+            <key column="pgroupid" not-null="true"/>
+            <one-to-many class="cn.edu.sjtu.se.walknshot.apiserver.entities.Picture"/>
+        </set>
+    </class>
+</hibernate-mapping>

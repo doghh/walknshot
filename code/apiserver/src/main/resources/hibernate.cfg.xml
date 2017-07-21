@@ -4,6 +4,7 @@
             org.hibernate.dialect.MySQL57Dialect
         </property>
 
+        <mapping resource="mappings/PGroup.hbm.xml"/>
         <mapping resource="mappings/Picture.hbm.xml"/>
         <mapping resource="mappings/Spot.hbm.xml"/>
         <mapping resource="mappings/Storage.hbm.xml"/>
