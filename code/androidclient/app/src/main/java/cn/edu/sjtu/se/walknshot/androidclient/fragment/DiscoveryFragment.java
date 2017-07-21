@@ -15,6 +15,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.CommentActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.ViewPicActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
@@ -81,9 +82,10 @@ public class DiscoveryFragment extends Fragment implements
                 break;
             }
             case PostAdapter.COMMENT: {
-                // open comment page
+                Intent intent = new Intent(getActivity(), CommentActivity.class);
                 // v.getTag() 得到的是不包括Header的内部position
                 // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
+                startActivity(intent);
                 break;
             }
             case PostAdapter.MORE: {

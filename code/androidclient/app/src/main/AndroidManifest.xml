@@ -37,6 +37,7 @@
         <activity android:name=".activity.AddPicturesActivity" />
         <activity android:name=".activity.BeautifyPictureActivity" />
         <activity android:name=".activity.ViewPicActivity" />
+        <activity android:name=".activity.CommentActivity"/>
         <activity
             android:name=".activity.LoginLoadingActivity"
             android:theme="@style/WindowDialog" />
