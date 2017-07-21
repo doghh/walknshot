@@ -46,7 +46,7 @@
                 android:layout_margin="12dp"
                 android:focusable="false"
                 android:src="@drawable/icon_more"
-                android:tint="@color/lostGrey" />
+                android:tint="@color/colorPrimaryBlack" />
 
             <ImageView
                 android:id="@+id/discovery_btn_comment"
@@ -56,17 +56,17 @@
                 android:layout_toStartOf="@id/discovery_btn_more"
                 android:focusable="false"
                 android:src="@drawable/icon_comment"
-                android:tint="@color/lostGrey" />
+                android:tint="@color/colorPrimaryBlack" />
 
-            <ImageView
-                android:id="@+id/discovery_btn_like"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_margin="12dp"
-                android:layout_toStartOf="@id/discovery_btn_comment"
-                android:focusable="false"
-                android:src="@drawable/selector_btn_like_src"
-                android:tint="@color/colorAccent" />
+            <!--<ImageView-->
+                <!--android:id="@+id/discovery_btn_like"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_margin="12dp"-->
+                <!--android:layout_toStartOf="@id/discovery_btn_comment"-->
+                <!--android:focusable="false"-->
+                <!--android:src="@drawable/selector_btn_like_src"-->
+                <!--android:tint="@color/colorAccent" />-->
 
         </RelativeLayout>
 

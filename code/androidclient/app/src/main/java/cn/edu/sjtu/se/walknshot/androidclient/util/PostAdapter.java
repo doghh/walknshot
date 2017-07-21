@@ -65,7 +65,7 @@ public class PostAdapter extends BaseAdapter {
             viewHolder.mTitle = (TextView) convertView.findViewById(R.id.title);
             viewHolder.mBody = (TextView) convertView.findViewById(R.id.body);
             viewHolder.mImage = (ImageView) convertView.findViewById(R.id.image);
-            viewHolder.mBtnLike = (ImageView) convertView.findViewById(R.id.discovery_btn_like);
+//            viewHolder.mBtnLike = (ImageView) convertView.findViewById(R.id.discovery_btn_like);
             viewHolder.mBtnComment = (ImageView) convertView.findViewById(R.id.discovery_btn_comment);
             viewHolder.mBtnMore = (ImageView) convertView.findViewById(R.id.discovery_btn_more);
             convertView.setTag(viewHolder);
@@ -82,12 +82,12 @@ public class PostAdapter extends BaseAdapter {
                 mCallback.click(view, IMGS);
             }
         });
-        viewHolder.mBtnLike.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCallback.click(view, LIKE);
-            }
-        });
+//        viewHolder.mBtnLike.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mCallback.click(view, LIKE);
+//            }
+//        });
         viewHolder.mBtnComment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,7 +101,7 @@ public class PostAdapter extends BaseAdapter {
             }
         });
         viewHolder.mImage.setTag(position);
-        viewHolder.mBtnLike.setTag(position);
+//        viewHolder.mBtnLike.setTag(position);
         viewHolder.mBtnComment.setTag(position);
         viewHolder.mBtnMore.setTag(position);
         return convertView;

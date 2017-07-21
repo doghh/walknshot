@@ -73,14 +73,14 @@ public class DiscoveryFragment extends Fragment implements
     @Override
     public void click(View v, int type) {
         switch (type) {
-            case PostAdapter.LIKE: {
-                MyToast.makeText(
-                        getActivity().getApplicationContext(),
-                        "listview的内部的按钮被点击了！，位置是-->" + (Integer) v.getTag() + ",内容是-->"
-                                + mPosts.get(((Integer) v.getTag()) / 4).getBody(),
-                        MyToast.LENGTH_SHORT).show();
-                break;
-            }
+//            case PostAdapter.LIKE: {
+//                MyToast.makeText(
+//                        getActivity().getApplicationContext(),
+//                        "listview的内部的按钮被点击了！，位置是-->" + (Integer) v.getTag() + ",内容是-->"
+//                                + mPosts.get(((Integer) v.getTag()) / 4).getBody(),
+//                        MyToast.LENGTH_SHORT).show();
+//                break;
+//            }
             case PostAdapter.COMMENT: {
                 Intent intent = new Intent(getActivity(), CommentActivity.class);
                 // v.getTag() 得到的是不包括Header的内部position
