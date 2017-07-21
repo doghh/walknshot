@@ -7,8 +7,8 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:orientation="vertical">
 
@@ -20,7 +20,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:src="@drawable/icon_addpic" />
     </RelativeLayout>
 </LinearLayout>

@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -324,64 +325,33 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 e.printStackTrace();
             }
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
-            startPhotoZoom(Uri.fromFile(picture));
+            beautifyPhoto(Uri.fromFile(picture));
         }
         if (data == null)
             return;
         // 读取相册缩放图片
         if (requestCode == PHOTO_ZOOM) {
-            startPhotoZoom(data.getData());
-        }
-        // 美化照片
-        if (requestCode == PHOTO_BEAUTIFY) {
-            Intent intent = new Intent(AddPicturesActivity.this, BeautifyPictureActivity.class);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Bundle extras = data.getExtras();
-            Bitmap newbmp;
-            if (extras != null) {
-                newbmp = extras.getParcelable("data");
-                newbmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            }
-            byte[] bitmapByte = baos.toByteArray();
-            intent.putExtra("bitmap", bitmapByte);
-            startActivityForResult(intent, PHOTO_RESULT);
+            beautifyPhoto(data.getData());
         }
         // 处理结果
         if (requestCode == PHOTO_RESULT) {
-            byte[] bis = data.getByteArrayExtra("returnbitmap");
-            Bitmap addbmp = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+            Uri uri = data.getData();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            addbmp.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
-            //此处可以把Bitmap保存到sd卡中
-            String filePath = mStoragePath;
-            File localFile = new File(filePath);
-            if (!localFile.exists()) {
-                boolean b = localFile.mkdir();
-                if (!b) {
-                    MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
-                }
-            }
-            mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
-            File picture = new File(mStoragePath + "/" + mFilename);
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap extractBm = null;
+            // 获取缩略图
             try {
-                FileOutputStream out = new FileOutputStream(picture);
-                out.write(stream.toByteArray());
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                bmOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
+                bmOptions.inJustDecodeBounds = false;
+                bmOptions.inSampleSize = Math.max(bmOptions.outWidth / 400, bmOptions.outHeight / 400);
+                extractBm = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
+            }catch (Exception e) {
+                MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
             }
-            try {
-                MediaStore.Images.Media.insertImage(getContentResolver(), picture.getAbsolutePath(), "title", "description");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
-            MyToast.makeText(getApplicationContext(), R.string.save_success, MyToast.LENGTH_SHORT).show();
-
             if ("mapPage".equals(mIntentSource)) {
+                extractBm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] bis = stream.toByteArray();
                 Intent intent = new Intent();
                 intent.putExtra("returnbitmap", bis)
                         .putExtra("latitude", latitude)
@@ -389,9 +359,9 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 setResult(RESULT_OK, intent);
                 finish();
             } else if ("discovery".equals(mIntentSource)) {
-                imageUris.add(Uri.fromFile(picture));
+                imageUris.add(uri);
                 HashMap<String, Object> map = new HashMap<>();
-                map.put("itemImage", addbmp);
+                map.put("itemImage", extractBm);
                 imageItem.add(map);
                 simpleAdapter = new SimpleAdapter(this,
                         imageItem, R.layout.my_view_addpic,
@@ -414,6 +384,14 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 //刷新后释放防止手机休眠后自动添加
             }
         }
+    }
+
+
+    // 美化照片
+    public void beautifyPhoto(Uri uri) {
+        Intent intent = new Intent(AddPicturesActivity.this, BeautifyPictureActivity.class);
+        intent.setData(uri);
+        startActivityForResult(intent, PHOTO_RESULT);
     }
 
     /**

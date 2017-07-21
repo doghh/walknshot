@@ -43,7 +43,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_gridview"
                 android:gravity="center"
-                android:numColumns="4"
+                android:numColumns="3"
                 android:padding="@dimen/activity_horizontal_margin"
                 android:scrollbarSize="2dp"
                 android:scrollbarThumbVertical="@drawable/bg_pink"

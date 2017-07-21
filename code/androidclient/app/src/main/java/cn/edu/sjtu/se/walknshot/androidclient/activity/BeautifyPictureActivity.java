@@ -4,14 +4,27 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
 
 /**
  * Created by zhangqiaoyu on 2017/7/12.
@@ -25,8 +38,8 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
     private TextView cancelBeautify;
     private ImageView savePicture;
     private Bitmap bmp;
-    private Bitmap newbmp;
-    private ImageView tempImage;
+    private Bitmap mNewbmp;
+    private ImageView mTempImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +56,18 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         cancelBeautify.setOnClickListener(onClickListener);
         savePicture = (ImageView) findViewById(R.id.savePicture);
         savePicture.setOnClickListener(onClickListener);
-        tempImage = (ImageView) findViewById(R.id.tempImage);
+        mTempImage = (ImageView) findViewById(R.id.tempImage);
 
         Intent intent =getIntent();
-        byte [] bis=intent.getByteArrayExtra("bitmap");
-        bmp = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-        newbmp = bmp;
-        tempImage.setImageBitmap(bmp);
+        Uri uri  = intent.getData();
+        try {
+            bmp = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri));
+            mNewbmp = bmp;
+            mTempImage.setImageBitmap(bmp);
+
+        } catch (Exception e) {
+            MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+        }
     }
 
     private final View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -57,28 +75,59 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         public void onClick(View v) {
             if(v == savePicture) { //提交照片
                 Intent intent = new Intent();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                newbmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                byte [] bitmapByte = baos.toByteArray();
-                intent.putExtra("returnbitmap", bitmapByte);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                mNewbmp.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
+                //此处可以把Bitmap保存到sd卡中
+                String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/walknshot";
+                File localFile = new File(filePath);
+                if (!localFile.exists()) {
+                    boolean b = localFile.mkdir();
+                    if (!b) {
+                        MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
+                    }
+                }
+                String mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
+                File picture = new File(filePath + "/" + mFilename);
+                try {
+                    FileOutputStream out = new FileOutputStream(picture);
+                    out.write(stream.toByteArray());
+                    out.flush();
+                    out.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    MediaStore.Images.Media.insertImage(getContentResolver(), picture.getAbsolutePath(), "title", "description");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
+                MyToast.makeText(getApplicationContext(), R.string.save_success, MyToast.LENGTH_SHORT).show();
+
+                Uri uri = Uri.fromFile(picture);
+                intent.setData(uri);
                 setResult(RESULT_OK,intent);
                 finish();
+
             }
             else if(v == cancelBeautify) { //恢复原状
-                newbmp = bmp;
-                tempImage.setImageBitmap(newbmp);
+                mNewbmp = bmp;
+                mTempImage.setImageBitmap(mNewbmp);
             }
             else if(v == oldRemember){ //怀旧效果
                 OldRemeberImage();
-                tempImage.setImageBitmap(newbmp);
+                mTempImage.setImageBitmap(mNewbmp);
             }
             else if(v == sunShine){ //光照效果
                 SunshineImage();
-                tempImage.setImageBitmap(newbmp);
+                mTempImage.setImageBitmap(mNewbmp);
             }
             else if(v == sketch){ //素描效果
                 SketchImage();
-                tempImage.setImageBitmap(newbmp);
+                mTempImage.setImageBitmap(mNewbmp);
             }
         }
     };
@@ -119,7 +168,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
             }
         }
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        newbmp = bitmap;
+        mNewbmp = bitmap;
     }
 
     private void SunshineImage() {
@@ -177,7 +226,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
             }
         }
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        newbmp = bitmap;
+        mNewbmp = bitmap;
     }
 
     private void SketchImage()
@@ -197,9 +246,9 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         int newG = 0;
         int newB = 0;
         //灰度图像
-        for (int i = 1; i < width - 1; i++)
+        for (int i = 1; i < height - 1; i++)
         {
-            for (int j = 1; j < height - 1; j++)   //拉普拉斯算子模板 { 0, -1, 0, -1, -5, -1, 0, -1, 0
+            for (int j = 1; j < width - 1; j++)   //拉普拉斯算子模板 { 0, -1, 0, -1, -5, -1, 0, -1, 0
             {
                 //获取前一个像素颜色
                 pixColor = pixels[width * i + j];
@@ -217,7 +266,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         int[] copixels = gaussBlur(pixels, width, height, 10, 10/3);   //高斯模糊 采用半径10
         int[] result = colorDodge(linpix, copixels);   //素描图像 颜色减淡
         bitmap.setPixels(result, 0, width, 0, 0, width, height);
-        newbmp = bitmap;
+        mNewbmp = bitmap;
     }
 
     //高斯模糊
