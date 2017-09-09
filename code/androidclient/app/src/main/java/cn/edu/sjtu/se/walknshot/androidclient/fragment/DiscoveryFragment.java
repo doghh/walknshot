@@ -1,104 +1,102 @@
 package cn.edu.sjtu.se.walknshot.androidclient.fragment;
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-
-import java.util.ArrayList;
+import android.widget.RelativeLayout;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
-import cn.edu.sjtu.se.walknshot.androidclient.activity.CommentActivity;
-import cn.edu.sjtu.se.walknshot.androidclient.activity.ViewPicActivity;
-import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
-import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
-import cn.edu.sjtu.se.walknshot.androidclient.util.PostAdapter;
-import cn.edu.sjtu.se.walknshot.androidclient.util.TransformUtils;
 
-public class DiscoveryFragment extends Fragment implements
-  //      AdapterView.OnItemClickListener,
-  //      AdapterView.OnItemLongClickListener,
-        PostAdapter.Callback {
+public class DiscoveryFragment extends Fragment {
 
-    private ListView mListView;
-    ArrayList<Post> mPosts = new ArrayList<>();
+    private RelativeLayout mBtnPostAll, mBtnPostMine;
+    private View selectMarkAll, selectMarkMine;
+    private PostListFragment postListFragmentAll, postListFragmentMine;
+
+    private int currentId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_discovery, container, false);
 
-        mListView = (ListView) rootView.findViewById(R.id.list_view);
-        mListView.setDividerHeight(0);
-        mListView.setPadding(10, 10, 10, 10);
-        Bitmap bbitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_welcome);
-        Bitmap bitmap = ThumbnailUtils.extractThumbnail(bbitmap, 1000, 1000);
-        mPosts.add(new Post(1, "title1", "This is News 1.", bitmap));
-        mPosts.add(new Post(2, "title2", "This is News 2.", bitmap));
-        mPosts.add(new Post(3, "title3", "This is News 3.", bitmap));
-        mPosts.add(new Post(4, "title4", "This is News 4.", bitmap));
-        PostAdapter adapter = new PostAdapter(getActivity(), this);
-        adapter.addAll(mPosts);
-        mListView.addHeaderView(inflater.inflate(R.layout.item_head, null, false));
-   //     mListView.setEmptyView();
-        mListView.setAdapter(adapter);
-  //      mListView.setOnItemClickListener(this);
-   ///     mListView.setOnItemLongClickListener(this);
+        mBtnPostAll = rootView.findViewById(R.id.tab_all_post);
+        mBtnPostMine = rootView.findViewById(R.id.tab_my_post);
+        selectMarkAll = rootView.findViewById(R.id.all_post_chosen);
+        selectMarkMine = rootView.findViewById(R.id.my_post_chosen);
+
+        //默认为all path
+        currentId = R.id.tab_all_post;
+        selectMarkMine.setVisibility(View.INVISIBLE);
+        postListFragmentAll = new PostListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("key", "all");
+        postListFragmentAll.setArguments(bundle);
+        getFragmentManager().beginTransaction().add(R.id.discovery_content, postListFragmentAll).commit();
+
+        //为2个tab设置监听
+        mBtnPostAll.setOnClickListener(tabClickListener);
+        mBtnPostMine.setOnClickListener(tabClickListener);
 
         return rootView;
     }
 
-//    /**
-//     * 响应ListView中item的点击事件
-//     */
-//    @Override
-//    public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-//    }
-//
-//    @Override
-//    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int arg2, long arg3) {
-//        return true;
-//    }
+    private View.OnClickListener tabClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            //如果当前选中跟上次选中的一样,不需要处理
+            if (v.getId() != currentId) {
+                if (v.getId() == R.id.tab_all_post) {
+                    selectMarkAll.setVisibility(View.VISIBLE);
+                    selectMarkMine.setVisibility(View.INVISIBLE);
+                } else if (v.getId() == R.id.tab_my_post) {
+                    selectMarkAll.setVisibility(View.INVISIBLE);
+                    selectMarkMine.setVisibility(View.VISIBLE);
+                }
+                changeFragment(v.getId());  //切换fragment
+                currentId = v.getId();      //设置选中id
+            }
+        }
+    };
 
-    /**
-     * 接口方法，响应ListView按钮点击事件
-     */
-    @Override
-    public void click(View v, int type) {
-        switch (type) {
-//            case PostAdapter.LIKE: {
-//                MyToast.makeText(
-//                        getActivity().getApplicationContext(),
-//                        "listview的内部的按钮被点击了！，位置是-->" + (Integer) v.getTag() + ",内容是-->"
-//                                + mPosts.get(((Integer) v.getTag()) / 4).getBody(),
-//                        MyToast.LENGTH_SHORT).show();
-//                break;
-//            }
-            case PostAdapter.COMMENT: {
-                Intent intent = new Intent(getActivity(), CommentActivity.class);
-                // v.getTag() 得到的是不包括Header的内部position
-                // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
-                startActivity(intent);
+    private void changeFragment(int resId) {
+        //开启一个Fragment事务
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        //隐藏所有fragment
+        if (postListFragmentAll != null)//不为空才隐藏,如果不判断第一次会有空指针异常
+            transaction.hide(postListFragmentAll);
+        if (postListFragmentMine != null)
+            transaction.hide(postListFragmentMine);
+
+        switch (resId) {
+            case R.id.tab_all_post: {
+                if (postListFragmentAll == null) {
+                    postListFragmentAll = new PostListFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("key", "all");
+                    postListFragmentAll.setArguments(bundle);
+                    transaction.add(R.id.discovery_content, postListFragmentAll);
+                } else {
+                    transaction.show(postListFragmentAll);
+                }
                 break;
             }
-            case PostAdapter.MORE: {
-                // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
-                break;
-            }
-            case PostAdapter.IMGS: {
-                // open view photo page
-                // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
-                Intent intent = new Intent(getActivity(), ViewPicActivity.class);
-                startActivity(intent);
+            case R.id.tab_my_post: {
+                if (postListFragmentMine == null) {
+                    postListFragmentMine = new PostListFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("key", "mine");
+                    postListFragmentMine.setArguments(bundle);
+                    transaction.add(R.id.discovery_content, postListFragmentMine);
+                } else {
+                    transaction.show(postListFragmentMine);
+                }
                 break;
             }
         }
+        transaction.commit();
     }
 }

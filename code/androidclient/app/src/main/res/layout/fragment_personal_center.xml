@@ -5,98 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.edu.sjtu.se.walknshot.androidclient.fragment.PersonalCenterFragment">
+    android:splitMotionEvents="false"
+    tools:context="cn.edu.sjtu.se.walknshot.androidclient.fragment.DiscoveryFragment">
 
-    <RelativeLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary">
-
-        <ImageView
-            android:id="@+id/my_profile_icon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_below="@id/toolbar"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:src="@drawable/icon_like" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        toolbar:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/my_profile_icon"
-            android:layout_centerHorizontal="true"
-            android:text="Username" />
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            toolbar:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/title_personal_center"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@android:color/black" />
-
-            <ImageView
-                android:id="@+id/persenal_center_btn_setting"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="end"
-                android:layout_margin="10dp"
-                android:maxHeight="24dp"
-                android:src="@drawable/icon_setting" />
-
-        </android.support.v7.widget.Toolbar>
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/bg_light"
-        android:clickable="true"
-        android:gravity="center">
+            android:layout_gravity="center"
+            android:text="@string/title_personal_center"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/white" />
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/icon_camera" />
+            android:id="@+id/persenal_center_btn_setting"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:maxHeight="24dp"
+            android:src="@drawable/icon_setting"
+            android:tint="@color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Path"
-            android:textSize="54sp" />
+    </android.support.v7.widget.Toolbar>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <ListView
+        android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/bg_white"
-        android:clickable="true"
-        android:gravity="center">
-
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/icon_comment" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Share"
-            android:textSize="54sp" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:background="@color/white" />
 
 </LinearLayout>

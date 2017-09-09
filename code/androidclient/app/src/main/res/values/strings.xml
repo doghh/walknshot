@@ -41,6 +41,11 @@
     <string name="log_end_record_path">Recording has been closed</string>
     <string name="error_location_loss">Sorry, can\'t get location </string>
 
+    <!-- Discovery -->
+    <string name="title_all_path">All</string>
+    <string name="title_my_path">My</string>
+    <string name="hint_your_comment">Your Comment</string>
+
     <!-- AddPictures -->
     <string name="title_beautifypictures">Beautify</string>
     <string name="action_submitPictures">Submit</string>
@@ -62,12 +67,20 @@
     <string name="action_exit">Exit</string>
     <string name="hint_start_exit">You will be logged off your account.</string>
 
+    <!--View Path-->
+    <string name="hue">Hue</string>
+    <string name="alpha">Alpha</string>
+    <string name="width">Width</string>
+    <string name="snapshot_preview">Snapshot Preview</string>
+
     <!-- Bar -->
     <string name="title_map">Map</string>
     <string name="title_discovery">Discover</string>
     <string name="title_personal_center">Me</string>
     <string name="title_setting">Settings</string>
     <string name="title_add_pictures">Add pictures</string>
+    <string name="title_view_path">Path Details</string>
+    <string name="title_comment">Comment</string>
 
     <!-- Permissions -->
     <string name="permission_rationale_location">This app requires location permission to start the main interface, or the map can\'t be used.</string>

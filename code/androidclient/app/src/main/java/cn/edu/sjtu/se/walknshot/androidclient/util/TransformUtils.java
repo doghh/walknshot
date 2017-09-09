@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
-import android.location.Location;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.res.ResourcesCompat;
@@ -17,13 +16,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
-import cn.edu.sjtu.se.walknshot.androidclient.model.Item;
-import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
 
 public class TransformUtils {
 

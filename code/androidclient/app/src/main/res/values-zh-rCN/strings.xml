@@ -41,6 +41,11 @@
     <string name="log_end_record_path">记录结束</string>
     <string name="error_location_loss">抱歉，无法识别定位</string>
 
+    <!-- Discovery -->
+    <string name="title_all_path">所有</string>
+    <string name="title_my_path">我的</string>
+    <string name="hint_your_comment">在此输入评论</string>
+
     <!-- AddPictures -->
     <string name="title_beautifypictures">美化照片</string>
     <string name="action_submitPictures">提交</string>
@@ -62,12 +67,20 @@
     <string name="action_exit">退出登录</string>
     <string name="hint_start_exit">确定要退出此账号吗？</string>
 
+    <!--View Path-->
+    <string name="hue">颜色</string>
+    <string name="alpha">透明度</string>
+    <string name="width">粗细</string>
+    <string name="snapshot_preview">截图预览</string>
+
     <!-- Bar -->
     <string name="title_map">地图</string>
     <string name="title_discovery">发现</string>
     <string name="title_personal_center">我的</string>
     <string name="title_setting">设置</string>
     <string name="title_add_pictures">添加照片</string>
+    <string name="title_view_path">详情</string>
+    <string name="title_comment">评论</string>
 
     <!-- Permissions -->
     <string name="permission_rationale_location">该应用需要访问位置权限才能启动主界面，否则地图功能不可用。</string>

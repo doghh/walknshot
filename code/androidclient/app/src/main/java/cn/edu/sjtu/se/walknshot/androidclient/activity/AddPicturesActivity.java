@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+import cn.edu.sjtu.se.walknshot.androidclient.util.NoFastClickUtil;
 import cn.edu.sjtu.se.walknshot.androidclient.util.PermissionUtils;
 import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.apiclient.*;
@@ -241,10 +242,12 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
         @Override
         public void onClick(View v) {
             if (v == mBtnOpenAlbum) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_UNSPECIFIED);
-                startActivityForResult(intent, PHOTO_ZOOM);
-            } else if (v == mBtnTakePhoto) {
+                if (!NoFastClickUtil.isFastClick()) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_UNSPECIFIED);
+                    startActivityForResult(intent, PHOTO_ZOOM);
+                }
+            } else if (v == mBtnTakePhoto && !NoFastClickUtil.isFastClick()) {
                 String filePath = mStoragePath;
                 File localFile = new File(filePath);
                 if (!localFile.exists()) {
@@ -256,7 +259,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                         , mFilename)));
                 startActivityForResult(intent, PHOTO_GRAPH);
             } else if (v == mBtnSubmitPic) { //提交照片
-                final Client client = ClientImpl.getInstance();
+                final ClientImpl client = ClientImpl.getInstance();
                 client.addSpot(new Callback() {
                     @Override
                     public void onNetworkFailure(IOException e) {
@@ -346,7 +349,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 bmOptions.inJustDecodeBounds = false;
                 bmOptions.inSampleSize = Math.max(bmOptions.outWidth / 400, bmOptions.outHeight / 400);
                 extractBm = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
             }
             if ("mapPage".equals(mIntentSource)) {

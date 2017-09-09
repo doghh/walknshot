@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Comment"
+            android:text="@string/title_comment"
             android:textAppearance="?android:textAppearanceLarge"
             android:textColor="@color/white" />
 
@@ -46,43 +46,38 @@
 
         </RelativeLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/transGrey"
+            android:padding="8dp">
 
             <EditText
                 android:id="@+id/myComment"
-                android:layout_width="250dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:hint="Your Comment"
-                android:textAlignment="textStart"
-                toolbar:layout_constraintBottom_toBottomOf="parent"
-                toolbar:layout_constraintLeft_toLeftOf="parent"
-                toolbar:layout_constraintRight_toLeftOf="@+id/mBtnSubmitCom"
-                toolbar:layout_constraintTop_toTopOf="parent" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:hint="@string/hint_your_comment"
+                android:paddingBottom="8dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="8dp" />
 
             <Button
                 android:id="@+id/mBtnSubmitCom"
-                android:layout_width="99dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorPrimaryDark"
+                style="@style/ButtonCommonTheme"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:text="@string/action_submitPictures"
-                android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="18sp"
-                toolbar:layout_constraintBottom_toBottomOf="parent"
-                toolbar:layout_constraintRight_toRightOf="parent"
-                toolbar:layout_constraintTop_toTopOf="parent" />
+                android:textSize="18sp" />
 
-        </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

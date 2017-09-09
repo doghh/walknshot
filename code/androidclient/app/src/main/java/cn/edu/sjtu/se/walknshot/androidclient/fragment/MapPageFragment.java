@@ -42,7 +42,6 @@ import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.AddPicturesActivity;
@@ -210,7 +209,7 @@ public class MapPageFragment extends Fragment {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         // start something
-                                        satrtRecordPath();
+                                        startRecordPath();
                                     }
                                 })
                         .setNegativeButton(R.string.reply_cancel, null)
@@ -241,18 +240,20 @@ public class MapPageFragment extends Fragment {
         mBtnGoPhotograph.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
-                if (mRecordBegun) {
-                    LatLng currentSpot = mSpots.get(mSpots.size() - 1);
-                    intent.putExtra("latitude", currentSpot.latitude)
-                            .putExtra("longitude", currentSpot.longitude)
-                            .putExtra("source", "mapPage");
-                } else {
-                    intent.putExtra("latitude", mLastKnownLocation.getLatitude())
-                            .putExtra("longitude", mLastKnownLocation.getLongitude())
-                            .putExtra("source", "mapPage");
+                if (mLastKnownLocation != null) {
+                    Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
+                    if (mRecordBegun) {
+                        LatLng currentSpot = mSpots.get(mSpots.size() - 1);
+                        intent.putExtra("latitude", currentSpot.latitude)
+                                .putExtra("longitude", currentSpot.longitude)
+                                .putExtra("source", "mapPage");
+                    } else {
+                        intent.putExtra("latitude", mLastKnownLocation.getLatitude())
+                                .putExtra("longitude", mLastKnownLocation.getLongitude())
+                                .putExtra("source", "mapPage");
+                    }
+                    getActivity().startActivityForResult(intent, PHOTO_GRAPH);
                 }
-                getActivity().startActivityForResult(intent, PHOTO_GRAPH);
             }
         });
     }
@@ -354,7 +355,7 @@ public class MapPageFragment extends Fragment {
         }
     }
 
-    public void satrtRecordPath() {
+    public void startRecordPath() {
         if (mLastKnownLocation != null) {
 
             // change button
@@ -447,12 +448,12 @@ public class MapPageFragment extends Fragment {
 
     public void addPhoto(byte[] bis, double lat, double lng) {
 //        if (mRecordBegun) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-            Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
-                    .position(new LatLng(lat, lng))
-                    .zIndex(ZINDEX_LEVEL_3));
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+        Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        mGoogleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
+                .position(new LatLng(lat, lng))
+                .zIndex(ZINDEX_LEVEL_3));
 //        }
     }
 
