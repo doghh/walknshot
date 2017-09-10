@@ -52,7 +52,7 @@ public class CommentActivity extends MyAppCompatActivity {
         //获取控件对象
         cGridView = (GridView) findViewById(R.id.add_com_gridview);
 
-        comment="Comment";
+        comment="没有啦";
         commentItem = new ArrayList<>();
         HashMap<String, Object> map = new HashMap<>();
 

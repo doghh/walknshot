@@ -70,6 +70,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
     private String mIntentSource;
     private String mStoragePath;
     private String mFilename = null;
+    private String mImageUri;
 
 
     @Override
@@ -77,8 +78,6 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        latitude = intent.getExtras().getDouble("latitude");
-        longitude = intent.getExtras().getDouble("longitude");
         mIntentSource = intent.getExtras().getString("source");
 
         // 锁定屏幕
@@ -92,9 +91,12 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                     WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
         }
 
-        if ("mapPage".equals(mIntentSource)) {
+        if ("mapPage".equals(mIntentSource) || "mapPageNotBegun".equals(mIntentSource)) {
+            latitude = intent.getExtras().getDouble("latitude");
+            longitude = intent.getExtras().getDouble("longitude");
             setContentView(R.layout.activity_photograph);
         } else if ("discovery".equals(mIntentSource)) {
+            mImageUri = intent.getExtras().getString("imageUri");
             setContentView(R.layout.activity_addpictures);
         }
 
@@ -113,6 +115,12 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             mBtnOpenAlbum = (ImageButton) findViewById(R.id.btn_open_album);
             mBtnTakePhoto.setOnClickListener(onClickListener);
             mBtnOpenAlbum.setOnClickListener(onClickListener);
+        } else if ("mapPageNotBegun".equals(mIntentSource)) {
+            mBtnTakePhoto = (ImageButton) findViewById(R.id.btn_take_photo);
+            mBtnOpenAlbum = (ImageButton) findViewById(R.id.btn_open_album);
+            mBtnTakePhoto.setOnClickListener(onClickListener);
+            mBtnOpenAlbum.setClickable(false);
+            mBtnOpenAlbum.setBackgroundColor(getResources().getColor(R.color.lostGrey));
         } else if ("discovery".equals(mIntentSource)) {
 
             //获取控件对象
@@ -154,6 +162,43 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 }
             });
             mGridView.setAdapter(simpleAdapter);
+
+            Uri uri = Uri.parse(mImageUri);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            Bitmap extractBm = null;
+            // 获取缩略图
+            try {
+                bmOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
+                bmOptions.inJustDecodeBounds = false;
+                bmOptions.inSampleSize = Math.max(bmOptions.outWidth / 400, bmOptions.outHeight / 400);
+                extractBm = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
+            } catch (Exception e) {
+                MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+            }
+            imageUris.add(uri);
+            HashMap<String, Object> map2 = new HashMap<>();
+            map2.put("itemImage", extractBm);
+            imageItem.add(map2);
+            simpleAdapter = new SimpleAdapter(this,
+                    imageItem, R.layout.my_view_addpic,
+                    new String[]{"itemImage"}, new int[]{R.id.imageView1});
+            simpleAdapter.setViewBinder(new ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Object data,
+                                            String textRepresentation) {
+                    // TODO Auto-generated method stub
+                    if (view instanceof ImageView && data instanceof Bitmap) {
+                        ImageView i = (ImageView) view;
+                        i.setImageBitmap((Bitmap) data);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            mGridView.setAdapter(simpleAdapter);
+            simpleAdapter.notifyDataSetChanged();
             /*
              * 监听GridView点击事件
              * 报错:该函数必须抽象方法 故需要手动导入import android.view.View;
@@ -259,48 +304,33 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                         , mFilename)));
                 startActivityForResult(intent, PHOTO_GRAPH);
             } else if (v == mBtnSubmitPic) { //提交照片
-                final ClientImpl client = ClientImpl.getInstance();
-                client.addSpot(new Callback() {
-                    @Override
-                    public void onNetworkFailure(IOException e) {
-                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(Object arg) {
-                        MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onSuccess(Object arg) {
-                        for (int i = 1; i < imageItem.size(); i++) {
-                            Bitmap temp = (Bitmap) imageItem.get(i).get("itemImage");
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            temp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                            byte[] bitmapByte = baos.toByteArray();
-                            final int fi = i;
-
-                            client.uploadPicture(new Callback() {
-                                @Override
-                                public void onNetworkFailure(IOException e) {
-                                    MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onFailure(Object arg) {
-                                    MyToast.makeText(getApplicationContext(), "第" + fi + "张图片上传失败", MyToast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onSuccess(Object arg) {
-                                    MyToast.makeText(getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
-                                }
-                            }, bitmapByte);
-                        }
-                        MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
-                    }
-                }, latitude, longitude);
-
+//                final ClientImpl client = ClientImpl.getInstance();
+//                for (int i = 1; i < imageItem.size(); i++) {
+//                    Bitmap temp = (Bitmap) imageItem.get(i).get("itemImage");
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    temp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//                    byte[] bitmapByte = baos.toByteArray();
+//                    final int fi = i;
+//
+//                    client.uploadPicture(new Callback() {
+//                        @Override
+//                        public void onNetworkFailure(IOException e) {
+//                            MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Object arg) {
+//                            MyToast.makeText(getApplicationContext(), "第" + fi + "张图片上传失败", MyToast.LENGTH_SHORT).show();
+//                        }
+//
+//                        @Override
+//                        public void onSuccess(Object arg) {
+//                            MyToast.makeText(getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
+//                        }
+//                    }, bitmapByte);
+//                }
+//                MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
+                finish();
             }
         }
     };
@@ -352,7 +382,7 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             } catch (Exception e) {
                 MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
             }
-            if ("mapPage".equals(mIntentSource)) {
+            if ("mapPage".equals(mIntentSource) || "mapPageNotBegun".equals(mIntentSource)) {
                 extractBm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 byte[] bis = stream.toByteArray();
                 Intent intent = new Intent();
@@ -425,24 +455,26 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
      * position为删除图片位置
      */
     protected void dialog(final int position) {
-        Builder builder = new Builder(AddPicturesActivity.this);
-        builder.setMessage("确认移除已添加图片吗？");
-        builder.setTitle("提示");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                imageItem.remove(position);
-                simpleAdapter.notifyDataSetChanged();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
+        if (position != 1) {
+            Builder builder = new Builder(AddPicturesActivity.this);
+            builder.setMessage("确认移除已添加图片吗？");
+            builder.setTitle("提示");
+            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    imageItem.remove(position);
+                    simpleAdapter.notifyDataSetChanged();
+                }
+            });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
+        }
     }
 
 }

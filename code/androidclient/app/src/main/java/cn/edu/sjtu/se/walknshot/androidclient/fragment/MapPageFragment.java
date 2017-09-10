@@ -253,7 +253,7 @@ public class MapPageFragment extends Fragment {
                     } else {
                         intent.putExtra("latitude", mLastKnownLocation.getLatitude())
                                 .putExtra("longitude", mLastKnownLocation.getLongitude())
-                                .putExtra("source", "mapPage");
+                                .putExtra("source", "mapPageNotBegun");
                     }
                     getActivity().startActivityForResult(intent, PHOTO_GRAPH);
                 }
@@ -371,6 +371,8 @@ public class MapPageFragment extends Fragment {
             // init spots
             LatLng startPoint = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
             mSpots.clear();
+            mGoogleMap.clear();
+            addBlueDot(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
             mSpots.add(startPoint);
             addSpotToServer(startPoint.latitude, startPoint.longitude);
 
@@ -451,31 +453,29 @@ public class MapPageFragment extends Fragment {
     };
 
     public void addPhoto(byte[] bis, double lat, double lng) {
-        if (mRecordBegun) {
-            final ClientImpl client = ClientImpl.getInstance();
-            client.uploadPicture(new Callback() {
-                @Override
-                public void onNetworkFailure(IOException e) {
-                    MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
-                }
+        final ClientImpl client = ClientImpl.getInstance();
+        client.uploadPicture(new Callback() {
+            @Override
+            public void onNetworkFailure(IOException e) {
+                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+            }
 
-                @Override
-                public void onFailure(Object arg) {
-                    MyToast.makeText(getActivity().getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
-                }
+            @Override
+            public void onFailure(Object arg) {
+                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+            }
 
-                @Override
-                public void onSuccess(Object arg) {
-                    MyToast.makeText(getActivity().getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
-                }
-            }, bis);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-            Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-            mGoogleMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
-                    .position(new LatLng(lat, lng))
-                    .zIndex(ZINDEX_LEVEL_3));
-        }
+            @Override
+            public void onSuccess(Object arg) {
+                MyToast.makeText(getActivity().getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
+            }
+        }, bis);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+        Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        mGoogleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
+                .position(new LatLng(lat, lng))
+                .zIndex(ZINDEX_LEVEL_3));
     }
 
     private void addBlueDot(LatLng latLng) {
