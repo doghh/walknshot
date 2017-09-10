@@ -1,8 +1,11 @@
 package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,6 +47,7 @@ public class ViewPathActivity extends MyAppCompatActivity implements
     private SeekBar mAlphaBar;
     private SeekBar mWidthBar;
     private ImageView mBtnShare;
+    private ImageView mBtnViewPic;
     private GoogleMap mMap;
 
     @Override
@@ -66,6 +69,14 @@ public class ViewPathActivity extends MyAppCompatActivity implements
 
         mBtnShare = (ImageView) findViewById(R.id.view_path_btn_share);
         mBtnShare.setOnClickListener(this);
+
+        mBtnViewPic = (ImageView) findViewById(R.id.photo_preview);
+        //获取第一张照片
+        // Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_welcome);
+        Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 54, 54, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        mBtnViewPic.setImageBitmap(extractBitmap);
+        mBtnViewPic.setOnClickListener(this);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -153,6 +164,10 @@ public class ViewPathActivity extends MyAppCompatActivity implements
             };
 
             mMap.snapshot(callback);
+        }
+        else if (v.getId() == R.id.photo_preview) {
+            Intent intent = new Intent(this, ViewPicActivity.class);
+            startActivity(intent);
         }
     }
 }

@@ -41,45 +41,67 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:stretchColumns="1">
+        android:gravity="center_vertical">
 
-        <TableRow
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/photo_preview"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/bg_pink"
+            android:padding="1dp"
+            android:scaleType="centerCrop" />
+
+        <View
+            android:layout_width="0.01dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:background="@color/lostGrey" />
+
+        <TableLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:stretchColumns="1">
 
-            <TextView android:text="@string/hue" />
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
-            <SeekBar android:id="@+id/hueSeekBar" />
+                <TextView android:text="@string/hue" />
 
-        </TableRow>
+                <SeekBar android:id="@+id/hueSeekBar" />
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            </TableRow>
 
-            <TextView android:text="@string/alpha" />
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
-            <SeekBar android:id="@+id/alphaSeekBar" />
+                <TextView android:text="@string/alpha" />
 
-        </TableRow>
+                <SeekBar android:id="@+id/alphaSeekBar" />
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            </TableRow>
 
-            <TextView android:text="@string/width" />
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
-            <SeekBar android:id="@+id/widthSeekBar" />
+                <TextView android:text="@string/width" />
 
-        </TableRow>
+                <SeekBar android:id="@+id/widthSeekBar" />
 
-    </TableLayout>
+            </TableRow>
+
+        </TableLayout>
+    </LinearLayout>
 
 </LinearLayout>
