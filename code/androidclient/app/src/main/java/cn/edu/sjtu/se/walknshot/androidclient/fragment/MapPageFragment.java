@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,8 @@ import cn.edu.sjtu.se.walknshot.androidclient.activity.MainActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
 import cn.edu.sjtu.se.walknshot.androidclient.util.PermissionUtils;
 import cn.edu.sjtu.se.walknshot.androidclient.util.TransformUtils;
+
+import cn.edu.sjtu.se.walknshot.apiclient.*;
 
 public class MapPageFragment extends Fragment {
 
@@ -369,6 +372,7 @@ public class MapPageFragment extends Fragment {
             LatLng startPoint = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
             mSpots.clear();
             mSpots.add(startPoint);
+            addSpotToServer(startPoint.latitude, startPoint.longitude);
 
             // start marker
             mStartMarker = mGoogleMap.addMarker(new MarkerOptions()
@@ -393,7 +397,7 @@ public class MapPageFragment extends Fragment {
             }).start();
 
             // log
-            MyToast.makeText(getActivity().getApplicationContext(), R.string.log_start_record_path, MyToast.LENGTH_SHORT).show();
+            //MyToast.makeText(getActivity().getApplicationContext(), R.string.log_start_record_path, MyToast.LENGTH_SHORT).show();
         } else {
             MyToast.makeText(getActivity().getApplicationContext(), R.string.error_location_loss, MyToast.LENGTH_SHORT).show();
         }
@@ -418,7 +422,7 @@ public class MapPageFragment extends Fragment {
             if (!newSpot.equals(mSpots.get(mSpots.size() - 1))) {
                 mSpots.add(newSpot);
                 // send new spot to server
-                // ...
+                addSpotToServer(newSpot.latitude, newSpot.longitude);
                 // send message to update UI
                 Message msgMessage = new Message();
                 msgMessage.arg1 = 1;
@@ -447,14 +451,31 @@ public class MapPageFragment extends Fragment {
     };
 
     public void addPhoto(byte[] bis, double lat, double lng) {
-//        if (mRecordBegun) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-        Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        mGoogleMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
-                .position(new LatLng(lat, lng))
-                .zIndex(ZINDEX_LEVEL_3));
-//        }
+        if (mRecordBegun) {
+            final ClientImpl client = ClientImpl.getInstance();
+            client.uploadPicture(new Callback() {
+                @Override
+                public void onNetworkFailure(IOException e) {
+                    MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Object arg) {
+                    MyToast.makeText(getActivity().getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSuccess(Object arg) {
+                    MyToast.makeText(getActivity().getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
+                }
+            }, bis);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+            Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+            mGoogleMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
+                    .position(new LatLng(lat, lng))
+                    .zIndex(ZINDEX_LEVEL_3));
+        }
     }
 
     private void addBlueDot(LatLng latLng) {
@@ -471,6 +492,26 @@ public class MapPageFragment extends Fragment {
                 .strokeColor(Color.parseColor("#B42979FF"))
                 .strokeWidth(3f)
                 .zIndex(ZINDEX_LEVEL_3));
+    }
+
+    private void addSpotToServer(double latitude, double longitude) {
+        final ClientImpl client = ClientImpl.getInstance();
+        client.addSpot(new Callback() {
+            @Override
+            public void onNetworkFailure(IOException e) {
+                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Object arg) {
+                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(Object arg) {
+                //MyToast.makeText(getActivity().getApplicationContext(), "addSpot成功", MyToast.LENGTH_SHORT).show();
+            }
+        }, latitude, longitude);
     }
 
 }
