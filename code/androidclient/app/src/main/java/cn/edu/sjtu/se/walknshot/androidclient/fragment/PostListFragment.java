@@ -6,10 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
@@ -19,11 +23,13 @@ import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import java.util.ArrayList;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.AddPicturesActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.CommentActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.MainActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.ViewPicActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.model.Post;
 import cn.edu.sjtu.se.walknshot.androidclient.util.PostAdapter;
+import me.rawn_hwang.library.widgit.SmartLoadingLayout;
 
 public class PostListFragment extends Fragment implements
         //      AdapterView.OnItemClickListener,
@@ -31,41 +37,71 @@ public class PostListFragment extends Fragment implements
         PostAdapter.Callback,
         View.OnTouchListener {
 
+    private SmartLoadingLayout mSmartLoadingLayout;
     private ListView mListView;
+    private ImageView mBtnShare, mBtnRefresh;
     ArrayList<Post> mPosts = new ArrayList<>();
+    PostAdapter mAdapter;
+
+    private int mTouchSlop;
+    private float mFirstY;
+    private float mCurrentY;
+
+    private final int EMPTY = 0;
+    private final int DONE = 1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_post, container, false);
 
-        mListView = (ListView) rootView.findViewById(R.id.list_view);
+        mBtnShare = rootView.findViewById(R.id.post_btn_share);
+        mBtnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
+                intent.putExtra("source", "discovery");
+                startActivity(intent);
+            }
+        });
+
+        mListView = rootView.findViewById(R.id.list_view);
         mListView.setDividerHeight(0);
         mListView.setPadding(10, 10, 10, 10);
         mListView.setOnTouchListener(this);
-
-        String type = getArguments().getString("key");
-        if (type == "all") {
-            //获取所有post并add到mPosts中
-            Bitmap bbitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_welcome);
-            Bitmap bitmap = ThumbnailUtils.extractThumbnail(bbitmap, 1000, 1000);
-            mPosts.add(new Post(1, "title1", "This is News 1.", bitmap));
-            mPosts.add(new Post(2, "title2", "This is News 2.", bitmap));
-            mPosts.add(new Post(3, "title3", "This is News 3.", bitmap));
-            mPosts.add(new Post(4, "title4", "This is News 4.", bitmap));
-        } else if (type == "mine") {
-            //获取用户的post并add到mPosts中
-            Bitmap bbitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_welcome);
-            Bitmap bitmap = ThumbnailUtils.extractThumbnail(bbitmap, 1000, 1000);
-            mPosts.add(new Post(1, "title1", "This is News 1.", bitmap));
-        }
-        PostAdapter adapter = new PostAdapter(getActivity(), this);
-        adapter.addAll(mPosts);
+        mAdapter = new PostAdapter(getActivity(), this);
         //     mListView.addHeaderView(inflater.inflate(R.layout.item_head_post, null, false));
         //     mListView.setEmptyView();
-        mListView.setAdapter(adapter);
+        mListView.setAdapter(mAdapter);
         //      mListView.setOnItemClickListener(this);
         ///     mListView.setOnItemLongClickListener(this);
+
+        mSmartLoadingLayout = SmartLoadingLayout.createDefaultLayout(getActivity(), mListView);
+        mSmartLoadingLayout.onLoading();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 下载数据的耗时过程
+                downloadData();
+            }
+        }).start();
+
+        mBtnRefresh = rootView.findViewById(R.id.post_btn_refresh);
+        mBtnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSmartLoadingLayout.onLoading();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 下载数据的耗时过程
+                        downloadData();
+                    }
+                }).start();
+            }
+        });
+
+        mTouchSlop = ViewConfiguration.get(getActivity()).getScaledTouchSlop();
 
         return rootView;
     }
@@ -149,7 +185,68 @@ public class PostListFragment extends Fragment implements
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mFirstY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                mCurrentY = event.getY();
+                if (mCurrentY - mFirstY > mTouchSlop) {
+                    mBtnRefresh.setVisibility(View.VISIBLE);
+                } else if (mFirstY - mCurrentY > mTouchSlop) {
+                    mBtnRefresh.setVisibility(View.GONE);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+        return false;
+    }
 
+    private final PostListFragment This = this;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.arg1) {
+                case EMPTY:
+                    mSmartLoadingLayout.onEmpty();
+                    break;
+                case DONE:
+                    mSmartLoadingLayout.onDone();
+                    mAdapter.setData(mPosts);
+                    mAdapter.notifyDataSetChanged();
+                    break;
+                default:
+                    mSmartLoadingLayout.onError();
+                    break;
+            }
+        }
+    };
+
+    public void downloadData() {
+        String type = getArguments().getString("key");
+        if (type == "all") {
+            //获取所有post并add到mPosts中
+            Bitmap bbitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_welcome);
+            Bitmap bitmap = ThumbnailUtils.extractThumbnail(bbitmap, 1000, 1000);
+            mPosts.add(new Post(1, "title1", "This is News 1.", bitmap));
+            mPosts.add(new Post(2, "title2", "This is News 2.", bitmap));
+            mPosts.add(new Post(3, "title3", "This is News 3.", bitmap));
+            mPosts.add(new Post(4, "title4", "This is News 4.", bitmap));
+        } else if (type == "mine") {
+            //获取用户的post并add到mPosts中
+            Bitmap bbitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_welcome);
+            Bitmap bitmap = ThumbnailUtils.extractThumbnail(bbitmap, 1000, 1000);
+            mPosts.add(new Post(1, "title1", "This is News 1.", bitmap));
+        }
+
+        Message msgMessage = new Message();
+
+        if (mPosts.size() <= 0) {
+            msgMessage.arg1 = EMPTY;
+            mHandler.sendMessage(msgMessage);
+        } else {
+            msgMessage = new Message();
+            msgMessage.arg1 = DONE;
+            mHandler.sendMessage(msgMessage);
         }
     }
 }

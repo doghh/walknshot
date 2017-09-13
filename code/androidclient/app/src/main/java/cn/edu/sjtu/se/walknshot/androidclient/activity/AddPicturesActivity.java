@@ -70,7 +70,6 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
     private String mIntentSource;
     private String mStoragePath;
     private String mFilename = null;
-    private String mImageUri;
 
 
     @Override
@@ -96,7 +95,6 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
             longitude = intent.getExtras().getDouble("longitude");
             setContentView(R.layout.activity_photograph);
         } else if ("discovery".equals(mIntentSource)) {
-            mImageUri = intent.getExtras().getString("imageUri");
             setContentView(R.layout.activity_addpictures);
         }
 
@@ -162,43 +160,6 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 }
             });
             mGridView.setAdapter(simpleAdapter);
-
-            Uri uri = Uri.parse(mImageUri);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            Bitmap extractBm = null;
-            // 获取缩略图
-            try {
-                bmOptions.inJustDecodeBounds = true;
-                BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
-                bmOptions.inJustDecodeBounds = false;
-                bmOptions.inSampleSize = Math.max(bmOptions.outWidth / 400, bmOptions.outHeight / 400);
-                extractBm = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri), null, bmOptions);
-            } catch (Exception e) {
-                MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
-            }
-            imageUris.add(uri);
-            HashMap<String, Object> map2 = new HashMap<>();
-            map2.put("itemImage", extractBm);
-            imageItem.add(map2);
-            simpleAdapter = new SimpleAdapter(this,
-                    imageItem, R.layout.my_view_addpic,
-                    new String[]{"itemImage"}, new int[]{R.id.imageView1});
-            simpleAdapter.setViewBinder(new ViewBinder() {
-                @Override
-                public boolean setViewValue(View view, Object data,
-                                            String textRepresentation) {
-                    // TODO Auto-generated method stub
-                    if (view instanceof ImageView && data instanceof Bitmap) {
-                        ImageView i = (ImageView) view;
-                        i.setImageBitmap((Bitmap) data);
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            mGridView.setAdapter(simpleAdapter);
-            simpleAdapter.notifyDataSetChanged();
             /*
              * 监听GridView点击事件
              * 报错:该函数必须抽象方法 故需要手动导入import android.view.View;
@@ -455,26 +416,24 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
      * position为删除图片位置
      */
     protected void dialog(final int position) {
-        if (position != 1) {
-            Builder builder = new Builder(AddPicturesActivity.this);
-            builder.setMessage("确认移除已添加图片吗？");
-            builder.setTitle("提示");
-            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    imageItem.remove(position);
-                    simpleAdapter.notifyDataSetChanged();
-                }
-            });
-            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
-        }
+        Builder builder = new Builder(AddPicturesActivity.this);
+        builder.setMessage("确认移除已添加图片吗？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                imageItem.remove(position);
+                simpleAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
 }

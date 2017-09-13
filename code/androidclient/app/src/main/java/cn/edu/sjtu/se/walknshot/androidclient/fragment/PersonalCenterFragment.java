@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +93,12 @@ public class PersonalCenterFragment extends Fragment
                 new String[]{"date", "start_time"}, //动态数组与ListItem对应的子项
                 new int[]{R.id.date, R.id.time});   //ListView的XML文件里面的两个TextView ID
 
-        mListView.addHeaderView(inflater.inflate(R.layout.item_head_personal_center, null, false));
+        View layout = inflater.inflate(R.layout.item_head_personal_center,
+                (ViewGroup) view.findViewById(R.id.head_personal_center));
+        TextView textView = layout.findViewById(R.id.personal_center_username);
+        textView.setText(getActivity().getSharedPreferences("info", MODE_PRIVATE).
+                getString("username", "Usernameee"));
+        mListView.addHeaderView(layout);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(this);
     }

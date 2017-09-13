@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,10 @@ public class PostAdapter extends BaseAdapter {
 
     public void addAll(List<Post> items) {
         list.addAll(items);
+    }
+
+    public void setData(ArrayList<Post> items) {
+        list = items;
     }
 
     static class ViewHolder {

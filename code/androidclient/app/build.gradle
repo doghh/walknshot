@@ -41,5 +41,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.0'
     compile 'com.github.chrisbanes:PhotoView:2.1.2'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    compile 'me.rawnhwang.library:app:1.2.5'
     testCompile 'junit:junit:4.12'
 }
