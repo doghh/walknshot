@@ -42,6 +42,10 @@ public interface Client {
     // onFailure: null
     void addComment(Callback callback, int pgroupId, String content);
 
+    // onSuccess: PGroupDetails
+    // onFailure: null
+    void getPGroupDetails(Callback callback, int pgroupId);
+
     // everyone:
     //  false -> only mine
     //  true -> everyone

@@ -72,6 +72,7 @@ public class PictureService {
             details.getPictures().add(entry);
         }
         pgroupDAO.addPGroup(pgroup);
+        details.setId(pgroup.getId());
         return details;
     }
 
@@ -94,6 +95,7 @@ public class PictureService {
             entry.setContent(comment.getContent());
             details.getComments().add(entry);
         }
+        details.setId(pgroupId);
         return details;
     }
 

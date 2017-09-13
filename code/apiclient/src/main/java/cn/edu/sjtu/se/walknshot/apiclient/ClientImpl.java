@@ -314,6 +314,35 @@ public class ClientImpl implements Client {
     }
 
     @Override
+    public void getPGroupDetails(final Callback callback, int pgroupId) {
+        RequestBody body = new FormBody.Builder()
+                .add("pgroupId", Integer.toString(pgroupId))
+                .build();
+
+        Request request = new Request.Builder()
+                .url(getBaseUrl() + "/pgroup/get")
+                .post(body)
+                .build();
+
+        new OkHttpClient().newCall(request).enqueue(new CallbackForward(callback) {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onNetworkFailure(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                PGroupDetails r = new ObjectMapper().readValue(response.body().string(), PGroupDetails.class);
+                if (r != null) {
+                    callback.onSuccess(r);
+                } else {
+                    callback.onFailure(null);
+                }
+            }
+        });
+    }
+
+    @Override
     public void getPGroups(final Callback callback, boolean everyone) {
         if (!isLoggedIn()) {
             callback.onFailure(null);
