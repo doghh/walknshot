@@ -15,6 +15,7 @@ public class TestClientImpl {
     private static Client client;
     private static long spotId;
     private static PictureEntry picture;
+    private static int pgroupId;
 
     public static void main(String[] args) {
         final ClientImpl clientImpl = ClientImpl.getInstance();
@@ -55,7 +56,8 @@ public class TestClientImpl {
                 public void onSuccess(Object arg) {
                     System.out.println("Login valid: " + arg);
                     // testAddSpot();
-                    testUploadPGroup();
+                    // testUploadPGroup();
+                    testPGroups();
                 }
             });
     }
@@ -119,11 +121,41 @@ public class TestClientImpl {
             @Override
             public void onSuccess(Object arg) {
                 PGroupDetails details = (PGroupDetails) arg;
+                pgroupId = details.getId();
+                testAddComment();
                 List<PictureEntry> pics = details.getPictures();
                 for (PictureEntry entry : pics) {
                     System.out.println("PGroup: " + entry.getStorageName());
                 }
             }
         }, list);
+    }
+
+    private static void testAddComment() {
+        client.addComment(new CallbackAutoNetworkFailure() {
+            @Override
+            public void onFailure(Object arg) {
+                // NOP
+            }
+
+            @Override
+            public void onSuccess(Object arg) {
+                System.out.println("comment added");
+            }
+        }, pgroupId, "Hahahaha jajajaja");
+    }
+
+    private static void testPGroups() {
+        client.getPGroups(new CallbackAutoNetworkFailure() {
+            @Override
+            public void onFailure(Object arg) {
+                // NOP
+            }
+
+            @Override
+            public void onSuccess(Object arg) {
+                System.out.println(arg);
+            }
+        }, true);
     }
 }

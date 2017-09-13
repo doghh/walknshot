@@ -3,6 +3,7 @@ package cn.edu.sjtu.se.walknshot.apiserver.controllers;
 import cn.edu.sjtu.se.walknshot.apimessages.Token;
 import cn.edu.sjtu.se.walknshot.apiserver.services.AuthenticationService;
 import cn.edu.sjtu.se.walknshot.apiserver.services.PictureService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,39 @@ public class PictureController {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    @PostMapping("/comment/add")
+    @ResponseBody
+    public Object addComment(
+            @RequestParam("token") String sToken,
+            @RequestParam("pgroupId") int pgroupId,
+            @RequestParam("content") String content
+            ) {
+        Token token = Token.fromString(sToken);
+        if (!auth.validateToken(token))
+            return null;
+        return pic.addComment(token.getUserId(), pgroupId, content);
+    }
+
+    @PostMapping("pgroup/get")
+    @ResponseBody
+    public Object getPGroup(
+            @RequestParam("pgroupId") int pgroupId
+            ) {
+        return pic.getPGroup(pgroupId);
+    }
+
+    @PostMapping("pgroup/list")
+    @ResponseBody
+    public Object getPGroups(
+            @RequestParam("token") String sToken,
+            @RequestParam("everyone") int everyone
+        ) {
+        Token token = Token.fromString(sToken);
+        if (!auth.validateToken(token))
+            return null;
+        return pic.getPGroupList(everyone == 1 ? null : token.getUserId());
     }
 
     @ExceptionHandler(MultipartException.class)

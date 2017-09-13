@@ -44,6 +44,9 @@
 
     <!-- DAOs -->
 
+    <bean id="pgroupDAO" class="cn.edu.sjtu.se.walknshot.apiserver.daos.PGroupDAO">
+        <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+    </bean>
     <bean id="pictureDAO" class="cn.edu.sjtu.se.walknshot.apiserver.daos.PictureDAO">
         <constructor-arg name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -71,6 +74,7 @@
         <constructor-arg name="spotDAO" ref="spotDAO"/>
     </bean>
     <bean id="pictureService" class="cn.edu.sjtu.se.walknshot.apiserver.services.PictureService">
+        <constructor-arg name="pgroupDAO" ref="pgroupDAO"/>
         <constructor-arg name="pictureDAO" ref="pictureDAO"/>
         <constructor-arg name="spotDAO" ref="spotDAO"/>
         <constructor-arg name="storageDAO" ref="storageDAO"/>

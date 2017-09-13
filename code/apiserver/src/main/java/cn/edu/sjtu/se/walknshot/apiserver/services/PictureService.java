@@ -1,11 +1,13 @@
 package cn.edu.sjtu.se.walknshot.apiserver.services;
 
+import cn.edu.sjtu.se.walknshot.apimessages.CommentEntry;
 import cn.edu.sjtu.se.walknshot.apimessages.PGroupDetails;
 import cn.edu.sjtu.se.walknshot.apimessages.PictureEntry;
 import cn.edu.sjtu.se.walknshot.apiserver.daos.PGroupDAO;
 import cn.edu.sjtu.se.walknshot.apiserver.daos.PictureDAO;
 import cn.edu.sjtu.se.walknshot.apiserver.daos.SpotDAO;
 import cn.edu.sjtu.se.walknshot.apiserver.daos.StorageDAO;
+import cn.edu.sjtu.se.walknshot.apiserver.entities.Comment;
 import cn.edu.sjtu.se.walknshot.apiserver.entities.PGroup;
 import cn.edu.sjtu.se.walknshot.apiserver.entities.Picture;
 import cn.edu.sjtu.se.walknshot.apiserver.entities.Storage;
@@ -23,7 +25,6 @@ public class PictureService {
     private StorageDAO storageDAO;
 
     private final String storageCollection = "picture";
-
     public PictureService(PGroupDAO pgroupDAO, PictureDAO pictureDAO, SpotDAO spotDAO, StorageDAO storageDAO) {
         this.pgroupDAO = pgroupDAO;
         this.pictureDAO = pictureDAO;
@@ -72,5 +73,46 @@ public class PictureService {
         }
         pgroupDAO.addPGroup(pgroup);
         return details;
+    }
+
+    @Transactional
+    public PGroupDetails getPGroup(int pgroupId) {
+        PGroupDetails details = new PGroupDetails();
+        List pictures = details.getPictures();
+        PGroup pgroup = pgroupDAO.getPGroup(pgroupId);
+        for (Picture picture : pgroup.getPictures()) {
+            PictureEntry entry = new PictureEntry();
+            entry.setId(picture.getId());
+            entry.setStorageName(storageDAO.getFilename(picture.getStorageId()));
+            details.getPictures().add(entry);
+        }
+        List<Comment> comments = pgroupDAO.getComments(pgroupId);
+        for (Comment comment : comments) {
+            CommentEntry entry = new CommentEntry();
+            entry.setUserId(comment.getUserId());
+            entry.setTime(comment.getTime());
+            entry.setContent(comment.getContent());
+            details.getComments().add(entry);
+        }
+        return details;
+    }
+
+    @Transactional
+    public CommentEntry addComment(int userId, int pgroupId, String content) {
+        Comment comment = pgroupDAO.addComment(pgroupId, userId, content);
+        CommentEntry entry = new CommentEntry();
+        entry.setUserId(userId);
+        entry.setContent(comment.getContent());
+        entry.setTime(comment.getTime());
+        return entry;
+    }
+
+
+    @Transactional
+    public List<Integer> getPGroupList(Integer uid) {
+        if (uid == null)
+            return pgroupDAO.getAll();
+        else
+            return pgroupDAO.getByUser(uid);
     }
 }

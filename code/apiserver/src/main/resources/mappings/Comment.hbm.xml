@@ -1,0 +1,11 @@
+<hibernate-mapping>
+    <class name="cn.edu.sjtu.se.walknshot.apiserver.entities.Comment" table="comment">
+        <id name="id" type="long" column="id">
+            <generator class="native"/>
+        </id>
+        <property name="userId" type="int" column="uid"/>
+        <property name="content" type="string" column="content" not-null="true"/>
+        <property name="time" type="timestamp" column="time" not-null="true"/>
+        <property name="pgroupId" type="int" column="pgroupid" not-null="true"/>
+    </class>
+</hibernate-mapping>

@@ -99,4 +99,8 @@ public class StorageDAO {
             return null;
         }
     }
+
+    public String getFilename(int id) {
+        return sessionFactory.getCurrentSession().get(Storage.class, id).getFilename();
+    }
 }
