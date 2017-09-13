@@ -2,6 +2,9 @@ package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -47,7 +50,7 @@ public class CommentActivity extends MyAppCompatActivity {
         initView();
     }
 
-    private void initView(){
+    private void initView() {
 
         mBtnSubmitCom = (Button) findViewById(R.id.mBtnSubmitCom);
         mComment = (EditText) findViewById(R.id.myComment);
@@ -56,65 +59,77 @@ public class CommentActivity extends MyAppCompatActivity {
         //获取控件对象
         cGridView = (GridView) findViewById(R.id.add_com_gridview);
 
-        comment="没有啦";
+        comment = "没有啦";
         commentItem = new ArrayList<>();
-        HashMap<String, Object> map = new HashMap<>();
 
-
-        /*
-            此处从数据库获取评论（格式：时间+“ ”+用户姓名+“：”+评论）
-         */
-//        final ClientImpl client = ClientImpl.getInstance();
-//        client.getPGroupDetails(new Callback() {
-//            @Override
-//            public void onNetworkFailure(IOException e) {
-//                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
-//            }
-//            @Override
-//            public void onFailure(Object arg) {
-//                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_download_fail, MyToast.LENGTH_SHORT).show();
-//            }
-//            @Override
-//            public void onSuccess(Object arg) {
-//                pGroupIds.add();
-//                displayPosts()
-//            }
-//        }, pgroupid);
-        map.put("itemComment", comment);
-        commentItem.add(0,map);
-
-        simpleAdapter = new SimpleAdapter(this,
-                commentItem, R.layout.my_view_comment,
-                new String[]{"itemComment"}, new int[]{R.id.comment});
-
-        //自定义ViewBinder()
-        simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+        final ClientImpl client = ClientImpl.getInstance();
+        client.getPGroupDetails(new Callback() {
             @Override
-            public boolean setViewValue(View view, Object data,
-                                        String textRepresentation) {
-                // TODO Auto-generated method stub
-                if (view instanceof TextView && data instanceof String) {
-                    TextView i = (TextView) view;
-                    i.setText((String) data);
-                    return true;
-                }
-                return false;
+            public void onNetworkFailure(IOException e) {
+                MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
             }
-        });
-        cGridView.setAdapter(simpleAdapter);
+
+            @Override
+            public void onFailure(Object arg) {
+                MyToast.makeText(getApplicationContext(), R.string.error_download_fail, MyToast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(Object arg) {
+                final PGroupDetails x = (PGroupDetails) arg;
+                int num = x.getComments().size();
+                for (int i = 0; i < num; i++) {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("itemComment", x.getComments().get(i).getContent());
+                    commentItem.add(0, map);
+                    Message msgMessage = new Message();
+                    msgMessage.arg1 = 1;
+                    mHandler.sendMessage(msgMessage);
+                }
+            }
+        }, Integer.parseInt(pgroupid));
     }
+
+    private final CommentActivity This = this;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.arg1) {
+                case 1:
+                    simpleAdapter = new SimpleAdapter(This,
+                            commentItem, R.layout.my_view_comment,
+                            new String[]{"itemComment"}, new int[]{R.id.comment});
+
+                    //自定义ViewBinder()
+                    simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+                        @Override
+                        public boolean setViewValue(View view, Object data,
+                                                    String textRepresentation) {
+                            // TODO Auto-generated method stub
+                            if (view instanceof TextView && data instanceof String) {
+                                TextView i = (TextView) view;
+                                i.setText((String) data);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                    cGridView.setAdapter(simpleAdapter);
+                    break;
+            }
+        }
+    };
 
     private final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(v==mBtnSubmitCom){
+            if (v == mBtnSubmitCom) {
                 //提交评论并刷新activity
                 comment = "";
-                if(TextUtils.isEmpty(mComment.getText())){
+                if (TextUtils.isEmpty(mComment.getText())) {
                     //评论为空
                     MyToast.makeText(getApplicationContext(), "Comment can't be empty", MyToast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     comment = mComment.getText().toString();
                     mComment.setText("");
 
@@ -137,11 +152,11 @@ public class CommentActivity extends MyAppCompatActivity {
                         public void onSuccess(Object arg) {
                             MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
                         }
-                    }, Integer.parseInt(pgroupid) ,comment);
+                    }, Integer.parseInt(pgroupid), comment);
 
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("itemComment", comment);
-                    commentItem.add(0,map);
+                    commentItem.add(0, map);
 
                     simpleAdapter = new SimpleAdapter(getApplicationContext(),
                             commentItem, R.layout.my_view_comment,
