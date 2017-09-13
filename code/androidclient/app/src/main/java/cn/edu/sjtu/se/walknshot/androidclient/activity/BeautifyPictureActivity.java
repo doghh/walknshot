@@ -11,7 +11,6 @@ import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
@@ -40,6 +38,8 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
     private Bitmap bmp;
     private Bitmap mNewbmp;
     private ImageView mTempImage;
+    private Uri sourceUri;
+    private boolean isOriginImage = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +58,10 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         savePicture.setOnClickListener(onClickListener);
         mTempImage = (ImageView) findViewById(R.id.tempImage);
 
-        Intent intent =getIntent();
-        Uri uri  = intent.getData();
+        Intent intent = getIntent();
+        sourceUri = intent.getData();
         try {
-            bmp = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(uri));
+            bmp = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(sourceUri));
             mNewbmp = bmp;
             mTempImage.setImageBitmap(bmp);
 
@@ -73,61 +73,65 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
     private final View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(v == savePicture) { //提交照片
+            if (v == savePicture) { //提交照片
                 Intent intent = new Intent();
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                mNewbmp.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
-                //此处可以把Bitmap保存到sd卡中
-                String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/walknshot";
-                File localFile = new File(filePath);
-                if (!localFile.exists()) {
-                    boolean b = localFile.mkdir();
-                    if (!b) {
-                        MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
+                if (isOriginImage) {
+                    intent.setData(sourceUri);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    mNewbmp.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
+                    //此处可以把Bitmap保存到sd卡中
+                    String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/walknshot";
+                    File localFile = new File(filePath);
+                    if (!localFile.exists()) {
+                        boolean b = localFile.mkdir();
+                        if (!b) {
+                            MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-                String mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
-                File picture = new File(filePath + "/" + mFilename);
-                try {
-                    FileOutputStream out = new FileOutputStream(picture);
-                    out.write(stream.toByteArray());
-                    out.flush();
-                    out.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    MediaStore.Images.Media.insertImage(getContentResolver(), picture.getAbsolutePath(), "title", "description");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
-                MyToast.makeText(getApplicationContext(), R.string.save_success, MyToast.LENGTH_SHORT).show();
+                    String mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
+                    File picture = new File(filePath + "/" + mFilename);
+                    try {
+                        FileOutputStream out = new FileOutputStream(picture);
+                        out.write(stream.toByteArray());
+                        out.flush();
+                        out.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        MediaStore.Images.Media.insertImage(getContentResolver(), picture.getAbsolutePath(), "title", "description");
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
+                    MyToast.makeText(getApplicationContext(), R.string.save_success, MyToast.LENGTH_SHORT).show();
 
-                Uri uri = Uri.fromFile(picture);
-                intent.setData(uri);
-                setResult(RESULT_OK,intent);
-                finish();
-
-            }
-            else if(v == cancelBeautify) { //恢复原状
+                    Uri uri = Uri.fromFile(picture);
+                    intent.setData(uri);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            } else if (v == cancelBeautify) { //恢复原状
                 mNewbmp = bmp;
                 mTempImage.setImageBitmap(mNewbmp);
-            }
-            else if(v == oldRemember){ //怀旧效果
+                isOriginImage = true;
+            } else if (v == oldRemember) { //怀旧效果
                 OldRemeberImage();
                 mTempImage.setImageBitmap(mNewbmp);
-            }
-            else if(v == sunShine){ //光照效果
+                isOriginImage = false;
+            } else if (v == sunShine) { //光照效果
                 SunshineImage();
                 mTempImage.setImageBitmap(mNewbmp);
-            }
-            else if(v == sketch){ //素描效果
+                isOriginImage = false;
+            } else if (v == sketch) { //素描效果
                 SketchImage();
                 mTempImage.setImageBitmap(mNewbmp);
+                isOriginImage = false;
             }
         }
     };
@@ -152,10 +156,8 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         int newB;
         int[] pixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        for (int i = 0; i < height; i++)
-        {
-            for (int k = 0; k < width; k++)
-            {
+        for (int i = 0; i < height; i++) {
+            for (int k = 0; k < width; k++) {
                 pixColor = pixels[width * i + k];
                 pixR = Color.red(pixColor);
                 pixG = Color.green(pixColor);
@@ -197,10 +199,8 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         float strength = 100F;  //光照强度100-150
         int[] pixels = new int[width * height];
         bmp.getPixels(pixels, 0, width, 0, 0, width, height);
-        for (int i = 1; i < height-1; i++)
-        {
-            for (int k = 1; k < width-1; k++)
-            {
+        for (int i = 1; i < height - 1; i++) {
+            for (int k = 1; k < width - 1; k++) {
                 //获取前一个像素颜色
                 pixColor = pixels[width * i + k];
                 pixR = Color.red(pixColor);
@@ -210,11 +210,10 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
                 newG = pixG;
                 newB = pixB;
                 //计算当前点到光照中心的距离,平面坐标系中两点之间的距离
-                int distance = (int) (Math.pow((centerY-i), 2) + Math.pow((centerX-k), 2));
-                if(distance < radius*radius)
-                {
+                int distance = (int) (Math.pow((centerY - i), 2) + Math.pow((centerX - k), 2));
+                if (distance < radius * radius) {
                     //按照距离大小计算增强的光照值
-                    int result = (int)(strength*( 1.0-Math.sqrt(distance) / radius ));
+                    int result = (int) (strength * (1.0 - Math.sqrt(distance) / radius));
                     newR = pixR + result;
                     newG = newG + result;
                     newB = pixB + result;
@@ -229,8 +228,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         mNewbmp = bitmap;
     }
 
-    private void SketchImage()
-    {
+    private void SketchImage() {
         //创建新Bitmap
         int width = bmp.getWidth();
         int height = bmp.getHeight();
@@ -246,8 +244,7 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
         int newG = 0;
         int newB = 0;
         //灰度图像
-        for (int i = 1; i < height - 1; i++)
-        {
+        for (int i = 1; i < height - 1; i++) {
             for (int j = 1; j < width - 1; j++)   //拉普拉斯算子模板 { 0, -1, 0, -1, -5, -1, 0, -1, 0
             {
                 //获取前一个像素颜色
@@ -256,14 +253,14 @@ public class BeautifyPictureActivity extends MyAppCompatActivity {
                 pixG = Color.green(pixColor);
                 pixB = Color.blue(pixColor);
                 //灰度图像
-                int gray=(int)(0.3*pixR+0.59*pixG+0.11*pixB);
+                int gray = (int) (0.3 * pixR + 0.59 * pixG + 0.11 * pixB);
                 linpix[width * i + j] = Color.argb(255, gray, gray, gray);
                 //图像反向
-                gray=255-gray;
+                gray = 255 - gray;
                 pixels[width * i + j] = Color.argb(255, gray, gray, gray);
             }
         }
-        int[] copixels = gaussBlur(pixels, width, height, 10, 10/3);   //高斯模糊 采用半径10
+        int[] copixels = gaussBlur(pixels, width, height, 10, 10 / 3);   //高斯模糊 采用半径10
         int[] result = colorDodge(linpix, copixels);   //素描图像 颜色减淡
         bitmap.setPixels(result, 0, width, 0, 0, width, height);
         mNewbmp = bitmap;

@@ -42,11 +42,14 @@ import com.google.android.gms.maps.model.RoundCap;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.AddPicturesActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.MainActivity;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.ViewPathActivity;
+import cn.edu.sjtu.se.walknshot.androidclient.util.GlobalVar;
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
 import cn.edu.sjtu.se.walknshot.androidclient.util.PermissionUtils;
 import cn.edu.sjtu.se.walknshot.androidclient.util.TransformUtils;
@@ -89,11 +92,10 @@ public class MapPageFragment extends Fragment {
 
     // The path
     public boolean mRecordBegun = false;
-    private List<LatLng> mSpots = new ArrayList<>();
     private Marker mStartMarker;
     private Polyline mPath;
 
-    private ImageButton mBtnMyLocation, mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph;
+    private ImageButton mBtnMyLocation, mBtnStartRecordPath, mBtnEndRecordPath, mBtnGoPhotograph, mBtnEdit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -182,8 +184,12 @@ public class MapPageFragment extends Fragment {
         mBtnStartRecordPath = (ImageButton) view.findViewById(R.id.main_btn_record_path_begin);
         mBtnEndRecordPath = (ImageButton) view.findViewById(R.id.main_btn_record_path_end);
         mBtnGoPhotograph = (ImageButton) view.findViewById((R.id.main_btn_photograph));
+        mBtnEdit = (ImageButton) view.findViewById((R.id.main_btn_edit));
         // 刚开始隐藏结束按钮
         mBtnEndRecordPath.setVisibility(View.GONE);
+        if (GlobalVar.mSpots.size() < 1){
+            mBtnEdit.setVisibility(View.GONE);
+        }
         // 设置监听
         mBtnMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,7 +252,7 @@ public class MapPageFragment extends Fragment {
                 if (mLastKnownLocation != null) {
                     Intent intent = new Intent(getActivity(), AddPicturesActivity.class);
                     if (mRecordBegun) {
-                        LatLng currentSpot = mSpots.get(mSpots.size() - 1);
+                        LatLng currentSpot = GlobalVar.mSpots.get(GlobalVar.mSpots.size() - 1);
                         intent.putExtra("latitude", currentSpot.latitude)
                                 .putExtra("longitude", currentSpot.longitude)
                                 .putExtra("source", "mapPage");
@@ -257,6 +263,13 @@ public class MapPageFragment extends Fragment {
                     }
                     getActivity().startActivityForResult(intent, PHOTO_GRAPH);
                 }
+            }
+        });
+        mBtnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ViewPathActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -370,10 +383,12 @@ public class MapPageFragment extends Fragment {
 
             // init spots
             LatLng startPoint = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-            mSpots.clear();
+            GlobalVar.mSpots.clear();
+            GlobalVar.mPhotos.clear();
+            mBtnEdit.setVisibility(View.GONE);
             mGoogleMap.clear();
             addBlueDot(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
-            mSpots.add(startPoint);
+            GlobalVar.mSpots.add(startPoint);
             addSpotToServer(startPoint.latitude, startPoint.longitude);
 
             // start marker
@@ -414,6 +429,9 @@ public class MapPageFragment extends Fragment {
         addBlueDot(new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
         // log
         MyToast.makeText(getActivity().getApplicationContext(), R.string.log_end_record_path, MyToast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), ViewPathActivity.class);
+        mBtnEdit.setVisibility(View.VISIBLE);
+        startActivity(intent);
     }
 
     public void updatePath(long sec) {
@@ -421,8 +439,8 @@ public class MapPageFragment extends Fragment {
             LatLng newSpot = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
             //LatLng newSpot = new LatLng
             //        (mSpots.get(mSpots.size() - 1).latitude + 0.1, mSpots.get(mSpots.size() - 1).longitude + 0.1);
-            if (!newSpot.equals(mSpots.get(mSpots.size() - 1))) {
-                mSpots.add(newSpot);
+            if (!newSpot.equals(GlobalVar.mSpots.get(GlobalVar.mSpots.size() - 1))) {
+                GlobalVar.mSpots.add(newSpot);
                 // send new spot to server
                 addSpotToServer(newSpot.latitude, newSpot.longitude);
                 // send message to update UI
@@ -442,8 +460,8 @@ public class MapPageFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
                 case 1:
-                    if (mSpots.size() > 0 && mPath != null) {
-                        mPath.setPoints(mSpots);
+                    if (GlobalVar.mSpots.size() > 0 && mPath != null) {
+                        mPath.setPoints(GlobalVar.mSpots);
                     }
                     break;
                 default:
@@ -453,25 +471,28 @@ public class MapPageFragment extends Fragment {
     };
 
     public void addPhoto(byte[] bis, double lat, double lng) {
-        final ClientImpl client = ClientImpl.getInstance();
-        client.uploadPicture(new Callback() {
-            @Override
-            public void onNetworkFailure(IOException e) {
-                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Object arg) {
-                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onSuccess(Object arg) {
-                MyToast.makeText(getActivity().getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
-            }
-        }, bis);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
         Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        if (mRecordBegun) {
+            final ClientImpl client = ClientImpl.getInstance();
+            client.uploadPicture(new Callback() {
+                @Override
+                public void onNetworkFailure(IOException e) {
+                    MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Object arg) {
+                    MyToast.makeText(getActivity().getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSuccess(Object arg) {
+                    MyToast.makeText(getActivity().getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
+                }
+            }, bis);
+            GlobalVar.mPhotos.put(new LatLng(lat, lng), extractBitmap);
+        }
         mGoogleMap.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromBitmap(extractBitmap))
                 .position(new LatLng(lat, lng))

@@ -1,12 +1,17 @@
 package cn.edu.sjtu.se.walknshot.androidclient.activity;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +30,20 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.util.GlobalVar;
+import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
 
 public class ViewPathActivity extends MyAppCompatActivity implements
         SeekBar.OnSeekBarChangeListener,
@@ -33,10 +51,6 @@ public class ViewPathActivity extends MyAppCompatActivity implements
         View.OnClickListener {
 
     // City locations for mutable polyline.
-    private static final LatLng ADELAIDE = new LatLng(-34.92873, 138.59995);
-    private static final LatLng DARWIN = new LatLng(-12.4258647, 130.7932231);
-    private static final LatLng MELBOURNE = new LatLng(-37.81319, 144.96298);
-    private static final LatLng PERTH = new LatLng(-31.95285, 115.85734);
 
     private static final int MAX_WIDTH_PX = 100;
     private static final int MAX_HUE_DEGREES = 360;
@@ -46,8 +60,7 @@ public class ViewPathActivity extends MyAppCompatActivity implements
     private SeekBar mHueBar;
     private SeekBar mAlphaBar;
     private SeekBar mWidthBar;
-    private ImageView mBtnShare;
-    private ImageView mBtnViewPic;
+    private ImageView mBtnSave;
     private GoogleMap mMap;
 
     @Override
@@ -67,16 +80,8 @@ public class ViewPathActivity extends MyAppCompatActivity implements
         mWidthBar.setMax(MAX_WIDTH_PX);
         mWidthBar.setProgress(MAX_WIDTH_PX / 10);
 
-        mBtnShare = (ImageView) findViewById(R.id.view_path_btn_share);
-        mBtnShare.setOnClickListener(this);
-
-        mBtnViewPic = (ImageView) findViewById(R.id.photo_preview);
-        //获取第一张照片
-        // Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_welcome);
-        Bitmap extractBitmap = ThumbnailUtils.extractThumbnail(bitmap, 54, 54, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        mBtnViewPic.setImageBitmap(extractBitmap);
-        mBtnViewPic.setOnClickListener(this);
+        mBtnSave = (ImageView) findViewById(R.id.view_path_btn_save);
+        mBtnSave.setOnClickListener(this);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -90,7 +95,7 @@ public class ViewPathActivity extends MyAppCompatActivity implements
 
         // start marker
         map.addMarker(new MarkerOptions()
-                .position(MELBOURNE)
+                .position(GlobalVar.mSpots.get(0))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
 
         // A simple polyline across Australia. This polyline will be mutable.
@@ -102,14 +107,21 @@ public class ViewPathActivity extends MyAppCompatActivity implements
                 .jointType(JointType.ROUND)
                 .color(color)
                 .width(mWidthBar.getProgress())
-                .geodesic(true)
-                .add(MELBOURNE, ADELAIDE, PERTH, DARWIN));
+                .geodesic(true));
+        mMutablePolyline.setPoints(GlobalVar.mSpots);
         mHueBar.setOnSeekBarChangeListener(this);
         mAlphaBar.setOnSeekBarChangeListener(this);
         mWidthBar.setOnSeekBarChangeListener(this);
 
+        Iterator iter = GlobalVar.mPhotos.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            map.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap((Bitmap) entry.getValue()))
+                    .position((LatLng) entry.getKey()));
+        }
         // Move the map so that it is centered on the mutable polyline.
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(MELBOURNE, 3));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(GlobalVar.mSpots.get(0), 15));
     }
 
     @Override
@@ -142,32 +154,63 @@ public class ViewPathActivity extends MyAppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.view_path_btn_share) {
+        if (v.getId() == R.id.view_path_btn_save) {
 
             final ViewPathActivity This = this;
             GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
-                public void onSnapshotReady(Bitmap snapshot) {
+                public void onSnapshotReady(final Bitmap snapshot) {
                     // TODO Auto-generated method stub
-                    Bitmap bitmap = snapshot;
                     LayoutInflater inflater = getLayoutInflater();
                     View layout = inflater.inflate(R.layout.my_view_snapshot,
                             (ViewGroup) findViewById(R.id.my_view_snapshot));
                     ImageView imageView = layout.findViewById(R.id.snapshot_preview);
-                    imageView.setImageBitmap(bitmap);
+                    imageView.setImageBitmap(snapshot);
                     new AlertDialog.Builder(This)
                             .setTitle(R.string.snapshot_preview)
                             .setView(layout)
-                            .setPositiveButton(R.string.reply_ok, null)
+                            .setPositiveButton(R.string.reply_ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                            snapshot.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
+                                            //此处可以把Bitmap保存到sd卡中
+                                            String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/walknshot";
+                                            File localFile = new File(filePath);
+                                            if (!localFile.exists()) {
+                                                boolean b = localFile.mkdir();
+                                                if (!b) {
+                                                    MyToast.makeText(getApplicationContext(), "创建文件夹失败", MyToast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                            String mFilename = "IMG_" + DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.US)) + ".jpg";
+                                            File picture = new File(filePath + "/" + mFilename);
+                                            try {
+                                                FileOutputStream out = new FileOutputStream(picture);
+                                                out.write(stream.toByteArray());
+                                                out.flush();
+                                                out.close();
+                                            } catch (FileNotFoundException e) {
+                                                e.printStackTrace();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                            try {
+                                                MediaStore.Images.Media.insertImage(getContentResolver(), picture.getAbsolutePath(), "title", "description");
+                                            } catch (FileNotFoundException e) {
+                                                e.printStackTrace();
+                                            }
+                                            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(picture)));
+                                            MyToast.makeText(getApplicationContext(), R.string.save_success, MyToast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    })
                             .setNegativeButton(R.string.reply_cancel, null)
                             .show();
                 }
             };
 
             mMap.snapshot(callback);
-        }
-        else if (v.getId() == R.id.photo_preview) {
-            Intent intent = new Intent(this, ViewPicActivity.class);
-            startActivity(intent);
         }
     }
 }

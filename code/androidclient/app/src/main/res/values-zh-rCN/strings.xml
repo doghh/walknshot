@@ -66,6 +66,10 @@
     <!-- Settings -->
     <string name="action_exit">退出登录</string>
     <string name="hint_start_exit">确定要退出此账号吗？</string>
+    <string name="error_invalid_function">该功能暂未开放</string>
+    <string name="title_feedback">反馈</string>
+    <string name="title_change_psw">修改密码</string>
+    <string name="title_help">帮助</string>
 
     <!--View Path-->
     <string name="hue">颜色</string>
@@ -76,7 +80,7 @@
     <!-- Bar -->
     <string name="title_map">地图</string>
     <string name="title_discovery">发现</string>
-    <string name="title_personal_center">我的</string>
+    <string name="title_personal_center">个人中心</string>
     <string name="title_setting">设置</string>
     <string name="title_add_pictures">添加照片</string>
     <string name="title_view_path">详情</string>

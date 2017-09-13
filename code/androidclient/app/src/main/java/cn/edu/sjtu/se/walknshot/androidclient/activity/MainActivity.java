@@ -20,6 +20,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import cn.edu.sjtu.se.walknshot.androidclient.fragment.DiscoveryFragment;
 import cn.edu.sjtu.se.walknshot.androidclient.fragment.MapPageFragment;
@@ -48,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements
     // The entry point to Google Play services, used by the Places API and Fused Location Provider.
     public GoogleApiClient mGoogleApiClient;
 
+    private static final String APP_ID = "wxc0ebc3f9157103a9";
+    public IWXAPI wxApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements
         mMapPage.setOnClickListener(tabClickListener);
         mDiscovery.setOnClickListener(tabClickListener);
         mPersonalCenter.setOnClickListener(tabClickListener);
+
+        wxApi = WXAPIFactory.createWXAPI(getApplicationContext(), APP_ID, true);
+        wxApi.registerApp(APP_ID);
     }
 
     private View.OnClickListener tabClickListener = new View.OnClickListener() {

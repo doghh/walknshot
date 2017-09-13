@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="24dp"
         android:orientation="vertical">
@@ -55,6 +56,14 @@
             android:layout_marginTop="20dp"
             android:src="@drawable/icon_stop"
             android:tint="@drawable/selector_pink_button_color" />
+
+        <ImageButton
+            android:id="@+id/main_btn_edit"
+            style="@style/ButtonRoundTheme"
+            android:layout_alignParentBottom="true"
+            android:scaleType="center"
+            android:src="@drawable/icon_edit"
+            android:tint="@color/amberDark" />
 
     </RelativeLayout>
 

@@ -66,6 +66,10 @@
     <!-- Settings -->
     <string name="action_exit">Exit</string>
     <string name="hint_start_exit">You will be logged off your account.</string>
+    <string name="error_invalid_function">This function is not open yet.</string>
+    <string name="title_feedback">Feedback</string>
+    <string name="title_change_psw">Change Password</string>
+    <string name="title_help">Help</string>
 
     <!--View Path-->
     <string name="hue">Hue</string>

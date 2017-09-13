@@ -1,7 +1,10 @@
 package cn.edu.sjtu.se.walknshot.androidclient.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +18,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
+import cn.edu.sjtu.se.walknshot.androidclient.activity.LoginActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.SettingActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.ViewPathActivity;
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class PersonalCenterFragment extends Fragment
         implements AdapterView.OnItemClickListener {
@@ -25,6 +31,10 @@ public class PersonalCenterFragment extends Fragment
     private ImageView mBtnGoSetting;
     private ListView mListView;
     private SimpleAdapter adapter;
+    private String FEEDBACK;
+    private String HELP;
+    private String CHANGE_PSW;
+    private String EXIT;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,18 +64,27 @@ public class PersonalCenterFragment extends Fragment
         //生成动态数组，并且转载数据
         ArrayList<HashMap<String, String>> pathList = new ArrayList<>();
 
-        for (int i = 0; i < 2; i++) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put("date", "2017-09-10");
-            map.put("start_time", "21:17");
-            pathList.add(map);
-        }
-        for (int i = 0; i < 3; i++) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put("date", "2017-09-11");
-            map.put("start_time", "10:03");
-            pathList.add(map);
-        }
+        FEEDBACK = getResources().getString(R.string.title_feedback);
+        HELP = getResources().getString(R.string.title_help);
+        CHANGE_PSW = getResources().getString(R.string.title_change_psw);
+        EXIT = getResources().getString(R.string.action_exit);
+
+        HashMap<String, String> map1 = new HashMap<>();
+        map1.put("date", CHANGE_PSW);
+        map1.put("start_time", "");
+        pathList.add(map1);
+        HashMap<String, String> map2 = new HashMap<>();
+        map2.put("date", HELP);
+        map2.put("start_time", "");
+        pathList.add(map2);
+        HashMap<String, String> map3 = new HashMap<>();
+        map3.put("date", FEEDBACK);
+        map3.put("start_time", "");
+        pathList.add(map3);
+        HashMap<String, String> map4 = new HashMap<>();
+        map4.put("date", EXIT);
+        map4.put("start_time", "");
+        pathList.add(map4);
 
         adapter = new SimpleAdapter(getActivity(),
                 pathList,   //数据来源
@@ -88,9 +107,29 @@ public class PersonalCenterFragment extends Fragment
         } else {
             @SuppressWarnings("unchecked")
             HashMap<String, String> map = (HashMap<String, String>) adapter.getItem(position - 1);
-   //         String string = "date: " + map.get("date") + "   time: " + map.get("start_time");
-            Intent intent = new Intent(getActivity(), ViewPathActivity.class);
-            startActivity(intent);
+            String btn = map.get("date");
+
+            if (btn.equals(FEEDBACK) || btn.equals(HELP) || btn.equals(CHANGE_PSW)) {
+                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_invalid_function, MyToast.LENGTH_SHORT).show();
+            } else if (btn.equals(EXIT)) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(R.string.hint_start_exit)
+                        .setPositiveButton(R.string.reply_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("info", MODE_PRIVATE);
+                                SharedPreferences.Editor mEditor = sharedPreferences.edit();
+                                mEditor.putString("token", "");
+                                mEditor.apply();
+
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton(R.string.reply_cancel, null)
+                        .show();
+            }
         }
     }
 }
