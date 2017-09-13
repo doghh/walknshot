@@ -36,6 +36,7 @@ import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
@@ -264,34 +265,33 @@ public class AddPicturesActivity extends MyAppCompatActivity implements
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(mStoragePath
                         , mFilename)));
                 startActivityForResult(intent, PHOTO_GRAPH);
-            } else if (v == mBtnSubmitPic) { //提交照片
-//                final ClientImpl client = ClientImpl.getInstance();
-//                for (int i = 1; i < imageItem.size(); i++) {
-//                    Bitmap temp = (Bitmap) imageItem.get(i).get("itemImage");
-//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                    temp.compress(Bitmap.CompressFormat.PNG, 100, baos);
-//                    byte[] bitmapByte = baos.toByteArray();
-//                    final int fi = i;
-//
-//                    client.uploadPicture(new Callback() {
-//                        @Override
-//                        public void onNetworkFailure(IOException e) {
-//                            MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Object arg) {
-//                            MyToast.makeText(getApplicationContext(), "第" + fi + "张图片上传失败", MyToast.LENGTH_SHORT).show();
-//                        }
-//
-//                        @Override
-//                        public void onSuccess(Object arg) {
-//                            MyToast.makeText(getApplicationContext(), "图片上传成功", MyToast.LENGTH_SHORT).show();
-//                        }
-//                    }, bitmapByte);
-//                }
-//                MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
-                finish();
+            } else if (v == mBtnSubmitPic || imageItem.size() > 0) { //提交照片
+                final ClientImpl client = ClientImpl.getInstance();
+                List<byte[]> pictures = new ArrayList<>();
+                for (int i = 1; i < imageItem.size(); i++) {
+                    Bitmap temp = (Bitmap) imageItem.get(i).get("itemImage");
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    temp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    byte[] bitmapByte = baos.toByteArray();
+                    pictures.add(bitmapByte);
+                }
+
+                client.uploadPGroup(new Callback() {
+                    @Override
+                    public void onNetworkFailure(IOException e) {
+                        MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onFailure(Object arg) {
+                        MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onSuccess(Object arg) {
+                        MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }, pictures);
             }
         }
     };

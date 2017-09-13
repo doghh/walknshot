@@ -10,11 +10,14 @@ import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.androidclient.util.MyToast;
+import cn.edu.sjtu.se.walknshot.apiclient.*;
+import cn.edu.sjtu.se.walknshot.apimessages.*;
 
 /**
  * Created by zhangqiaoyu on 2017/7/20.
@@ -39,6 +42,7 @@ public class CommentActivity extends MyAppCompatActivity {
 
         //获取传入参数
         Intent intent = getIntent();
+        pgroupid = intent.getStringExtra("groupid");
 
         initView();
     }
@@ -60,6 +64,22 @@ public class CommentActivity extends MyAppCompatActivity {
         /*
             此处从数据库获取评论（格式：时间+“ ”+用户姓名+“：”+评论）
          */
+//        final ClientImpl client = ClientImpl.getInstance();
+//        client.getPGroupDetails(new Callback() {
+//            @Override
+//            public void onNetworkFailure(IOException e) {
+//                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+//            }
+//            @Override
+//            public void onFailure(Object arg) {
+//                MyToast.makeText(getActivity().getApplicationContext(), R.string.error_download_fail, MyToast.LENGTH_SHORT).show();
+//            }
+//            @Override
+//            public void onSuccess(Object arg) {
+//                pGroupIds.add();
+//                displayPosts()
+//            }
+//        }, pgroupid);
         map.put("itemComment", comment);
         commentItem.add(0,map);
 
@@ -101,6 +121,23 @@ public class CommentActivity extends MyAppCompatActivity {
                     /*
                         此处提交获得的评论到服务器，并且获取评论返回值
                      */
+                    final ClientImpl client = ClientImpl.getInstance();
+                    client.addComment(new Callback() {
+                        @Override
+                        public void onNetworkFailure(IOException e) {
+                            MyToast.makeText(getApplicationContext(), R.string.error_network_fail, MyToast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Object arg) {
+                            MyToast.makeText(getApplicationContext(), R.string.error_upload_fail, MyToast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onSuccess(Object arg) {
+                            MyToast.makeText(getApplicationContext(), R.string.upload_success, MyToast.LENGTH_SHORT).show();
+                        }
+                    }, Integer.parseInt(pgroupid) ,comment);
 
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("itemComment", comment);

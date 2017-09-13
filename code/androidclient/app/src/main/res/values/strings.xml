@@ -61,6 +61,8 @@
     <string name="error_max_photo">At most 9 pictures</string>
     <string name="error_upload_fail">Sorry, uploading fails</string>
     <string name="upload_success">Upload successfully</string>
+    <string name="error_download_fail">Sorry, downloading fails</string>
+    <string name="download_success">Download successfully</string>
     <string name="save_success">Save successfully</string>
 
     <!-- Settings -->

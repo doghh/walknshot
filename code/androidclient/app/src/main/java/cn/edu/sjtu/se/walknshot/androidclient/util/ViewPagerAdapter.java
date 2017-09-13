@@ -2,6 +2,7 @@ package cn.edu.sjtu.se.walknshot.androidclient.util;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -16,10 +17,10 @@ import cn.edu.sjtu.se.walknshot.androidclient.R;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
-    List<String> imgs;
+    List<byte[]> imgs;
     Context mContext;
 
-    public ViewPagerAdapter(Context context, List<String> imgs) {
+    public ViewPagerAdapter(Context context, List<byte[]> imgs) {
         this.mContext = context;
         this.imgs = imgs;
     }
@@ -41,12 +42,13 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        String imgUrl = imgs.get(position);
+        byte[] imgUrl = imgs.get(position);
         LinearLayout view = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.my_view_imgs_browse, null);
         PhotoView photoView = (PhotoView) view.findViewById(R.id.photo_view);
         photoView.setTag(imgUrl);
         //      ImageLoaderUtil.getInstance().displayListItemImage(imgs.get(position), img);
-        photoView.setImageResource(R.drawable.bg_welcome);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imgUrl, 0, imgUrl.length);
+        photoView.setImageBitmap(bitmap);
         ((ViewPager) container).addView(view);
 
         return view;

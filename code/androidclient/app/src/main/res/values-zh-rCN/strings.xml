@@ -61,6 +61,8 @@
     <string name="error_max_photo">最多上传9张照片</string>
     <string name="error_upload_fail">上传失败</string>
     <string name="upload_success">上传成功</string>
+    <string name="error_download_fail">下载失败</string>
+    <string name="download_success">下载成功</string>
     <string name="save_success">图片已保存</string>
 
     <!-- Settings -->

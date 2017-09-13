@@ -41,9 +41,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import cn.edu.sjtu.se.walknshot.androidclient.R;
 import cn.edu.sjtu.se.walknshot.androidclient.activity.AddPicturesActivity;
