@@ -159,7 +159,7 @@ public class PostListFragment extends Fragment implements
             }
             case PostAdapter.MORE: {
                 // ID = posts.get(((Integer) v.getTag()) / 4).getPostId();
-                Bitmap pic = BitmapFactory.decodeResource(getResources(), R.drawable.bg_welcome);
+                Bitmap pic = mPosts.get(((Integer) v.getTag()) / 4).getCover();
 
                 WXImageObject imageObject = new WXImageObject(pic);
                 //这个构造方法中自动把传入的bitmap转化为2进制数据,或者你直接传入byte[]也行
